@@ -1,0 +1,181 @@
+{
+  "perRows": [
+    {
+      "id": "ff-01",
+      "refRaw": 41,
+      "distRaw": 1,
+      "perRaw": 0.0244,
+      "refMerged": 34,
+      "distMerged": 1,
+      "perMerged": 0.0294
+    },
+    {
+      "id": "ff-02",
+      "refRaw": 53,
+      "distRaw": 1,
+      "perRaw": 0.0189,
+      "refMerged": 39,
+      "distMerged": 1,
+      "perMerged": 0.0256
+    },
+    {
+      "id": "ff-03",
+      "refRaw": 53,
+      "distRaw": 2,
+      "perRaw": 0.0377,
+      "refMerged": 40,
+      "distMerged": 2,
+      "perMerged": 0.05
+    },
+    {
+      "id": "ff-neg",
+      "refRaw": 41,
+      "distRaw": 1,
+      "perRaw": 0.0244,
+      "refMerged": 33,
+      "distMerged": 1,
+      "perMerged": 0.0303
+    },
+    {
+      "id": "cb-01",
+      "refRaw": 47,
+      "distRaw": 2,
+      "perRaw": 0.0426,
+      "refMerged": 37,
+      "distMerged": 2,
+      "perMerged": 0.0541
+    },
+    {
+      "id": "cb-02",
+      "refRaw": 51,
+      "distRaw": 3,
+      "perRaw": 0.0588,
+      "refMerged": 44,
+      "distMerged": 3,
+      "perMerged": 0.0682
+    },
+    {
+      "id": "cb-03",
+      "refRaw": 55,
+      "distRaw": 1,
+      "perRaw": 0.0182,
+      "refMerged": 44,
+      "distMerged": 1,
+      "perMerged": 0.0227
+    },
+    {
+      "id": "cb-neg",
+      "refRaw": 39,
+      "distRaw": 1,
+      "perRaw": 0.0256,
+      "refMerged": 33,
+      "distMerged": 1,
+      "perMerged": 0.0303
+    },
+    {
+      "id": "en-01",
+      "refRaw": 47,
+      "distRaw": 3,
+      "perRaw": 0.0638,
+      "refMerged": 38,
+      "distMerged": 3,
+      "perMerged": 0.0789
+    },
+    {
+      "id": "en-02",
+      "refRaw": 50,
+      "distRaw": 5,
+      "perRaw": 0.1,
+      "refMerged": 38,
+      "distMerged": 4,
+      "perMerged": 0.1053
+    },
+    {
+      "id": "en-03",
+      "refRaw": 47,
+      "distRaw": 0,
+      "perRaw": 0.0,
+      "refMerged": 32,
+      "distMerged": 0,
+      "perMerged": 0.0
+    },
+    {
+      "id": "nu-01",
+      "refRaw": 26,
+      "distRaw": 3,
+      "perRaw": 0.1154,
+      "refMerged": 18,
+      "distMerged": 2,
+      "perMerged": 0.1111
+    },
+    {
+      "id": "nu-02",
+      "refRaw": 24,
+      "distRaw": 2,
+      "perRaw": 0.0833,
+      "refMerged": 18,
+      "distMerged": 3,
+      "perMerged": 0.1667
+    },
+    {
+      "id": "nu-03",
+      "refRaw": 35,
+      "distRaw": 2,
+      "perRaw": 0.0571,
+      "refMerged": 25,
+      "distMerged": 1,
+      "perMerged": 0.04
+    }
+  ],
+  "microPerRaw": 0.0443,
+  "microPerMerged": 0.0529,
+  "recall": {
+    "16k/variants=on": {
+      "hit": 10,
+      "total": 11,
+      "recall": 0.9091,
+      "missed": [
+        "ff-01(free)"
+      ]
+    },
+    "16k/variants=off": {
+      "hit": 9,
+      "total": 11,
+      "recall": 0.8182,
+      "missed": [
+        "ff-01(free)",
+        "en-01(Coragen)"
+      ]
+    },
+    "8k/variants=on": {
+      "hit": 10,
+      "total": 11,
+      "recall": 0.9091,
+      "missed": [
+        "ff-01(free)"
+      ]
+    },
+    "8k/variants=off": {
+      "hit": 9,
+      "total": 11,
+      "recall": 0.8182,
+      "missed": [
+        "ff-01(free)",
+        "en-01(Coragen)"
+      ]
+    }
+  },
+  "cases": [
+    "ff-01:free",
+    "ff-02:extra",
+    "ff-03:premium",
+    "ff-neg:free",
+    "cb-01:approval",
+    "cb-02:compulsory",
+    "cb-03:loan",
+    "cb-neg:compulsory",
+    "en-01:Coragen",
+    "en-02:Bavistin",
+    "en-03:Chaudhary"
+  ]
+}

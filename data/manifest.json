@@ -1,0 +1,176 @@
+[
+  {
+    "id": "ff-01",
+    "file": "data/clips/ff-01.wav",
+    "file8k": "data/clips8k/ff-01.wav",
+    "truth": "यह प्लान बिल्कुल free है, premium नहीं लगेगा",
+    "entities": [
+      "free",
+      "premium"
+    ],
+    "termSetId": "false-free",
+    "isNegated": false,
+    "saidVoice": "Lekha"
+  },
+  {
+    "id": "ff-02",
+    "file": "data/clips/ff-02.wav",
+    "file8k": "data/clips8k/ff-02.wav",
+    "truth": "इसमें कोई extra charge नहीं है, सब कुछ free में मिलेगा",
+    "entities": [
+      "extra",
+      "charge",
+      "free"
+    ],
+    "termSetId": "false-free",
+    "isNegated": false,
+    "saidVoice": "Lekha"
+  },
+  {
+    "id": "ff-03",
+    "file": "data/clips/ff-03.wav",
+    "file8k": "data/clips8k/ff-03.wav",
+    "truth": "पहले साल premium नहीं लगेगा, दूसरे साल से लगेगा",
+    "entities": [
+      "premium"
+    ],
+    "termSetId": "false-free",
+    "isNegated": false,
+    "saidVoice": "Lekha"
+  },
+  {
+    "id": "ff-neg",
+    "file": "data/clips/ff-neg.wav",
+    "file8k": "data/clips8k/ff-neg.wav",
+    "truth": "यह free नहीं है, हर महीने premium लगेगा",
+    "entities": [
+      "free",
+      "premium"
+    ],
+    "termSetId": "false-free",
+    "isNegated": true,
+    "saidVoice": "Lekha"
+  },
+  {
+    "id": "cb-01",
+    "file": "data/clips/cb-01.wav",
+    "file8k": "data/clips8k/cb-01.wav",
+    "truth": "approval के लिए health cover साथ में लेना पड़ेगा",
+    "entities": [
+      "approval",
+      "cover"
+    ],
+    "termSetId": "forced-bundling",
+    "isNegated": false,
+    "saidVoice": "Lekha"
+  },
+  {
+    "id": "cb-02",
+    "file": "data/clips/cb-02.wav",
+    "file8k": "data/clips8k/cb-02.wav",
+    "truth": "यह rider compulsory है, इसके बिना policy नहीं मिलेगी",
+    "entities": [
+      "compulsory",
+      "policy"
+    ],
+    "termSetId": "forced-bundling",
+    "isNegated": false,
+    "saidVoice": "Lekha"
+  },
+  {
+    "id": "cb-03",
+    "file": "data/clips/cb-03.wav",
+    "file8k": "data/clips8k/cb-03.wav",
+    "truth": "loan के साथ insurance लेना पड़ेगा, तभी approval मिलेगा",
+    "entities": [
+      "loan",
+      "insurance",
+      "approval"
+    ],
+    "termSetId": "forced-bundling",
+    "isNegated": false,
+    "saidVoice": "Lekha"
+  },
+  {
+    "id": "cb-neg",
+    "file": "data/clips/cb-neg.wav",
+    "file8k": "data/clips8k/cb-neg.wav",
+    "truth": "यह compulsory नहीं है, बिल्कुल optional है",
+    "entities": [
+      "compulsory",
+      "optional"
+    ],
+    "termSetId": "forced-bundling",
+    "isNegated": true,
+    "saidVoice": "Lekha"
+  },
+  {
+    "id": "en-01",
+    "file": "data/clips/en-01.wav",
+    "file8k": "data/clips8k/en-01.wav",
+    "truth": "Coragen को दस लीटर पानी में मिलाकर spray कीजिए",
+    "entities": [
+      "Coragen",
+      "spray"
+    ],
+    "termSetId": "entity",
+    "isNegated": false,
+    "saidVoice": "Lekha"
+  },
+  {
+    "id": "en-02",
+    "file": "data/clips/en-02.wav",
+    "file8k": "data/clips8k/en-02.wav",
+    "truth": "Bavistin powder एक चम्मच प्रति लीटर डालिए",
+    "entities": [
+      "Bavistin",
+      "powder"
+    ],
+    "termSetId": "entity",
+    "isNegated": false,
+    "saidVoice": "Lekha"
+  },
+  {
+    "id": "en-03",
+    "file": "data/clips/en-03.wav",
+    "file8k": "data/clips8k/en-03.wav",
+    "truth": "मेरा नाम Chaudhary है, मैं Bharat से बोल रहा हूँ",
+    "entities": [
+      "Chaudhary",
+      "Bharat"
+    ],
+    "termSetId": "entity",
+    "isNegated": false,
+    "saidVoice": "Lekha"
+  },
+  {
+    "id": "nu-01",
+    "file": "data/clips/nu-01.wav",
+    "file8k": "data/clips8k/nu-01.wav",
+    "truth": "आज मौसम बहुत अच्छा है",
+    "entities": [],
+    "termSetId": null,
+    "isNegated": false,
+    "saidVoice": "Lekha"
+  },
+  {
+    "id": "nu-02",
+    "file": "data/clips/nu-02.wav",
+    "file8k": "data/clips8k/nu-02.wav",
+    "truth": "कल बाज़ार बंद रहेगा",
+    "entities": [],
+    "termSetId": null,
+    "isNegated": false,
+    "saidVoice": "Lekha"
+  },
+  {
+    "id": "nu-03",
+    "file": "data/clips/nu-03.wav",
+    "file8k": "data/clips8k/nu-03.wav",
+    "truth": "खेत में पानी देना बहुत ज़रूरी है",
+    "entities": [],
+    "termSetId": null,
+    "isNegated": false,
+    "saidVoice": "Lekha"
+  }
+]

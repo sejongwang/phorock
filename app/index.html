@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VoxLedger · 힝글리시 TM 오안내 감사</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@300..900&amp;family=Montserrat:wght@100..900&amp;family=JetBrains+Mono:wght@100..800&amp;family=Outfit:wght@100..900&amp;family=Albert+Sans:wght@100..900&amp;family=Fraunces:opsz,wght@9..144,100..900&amp;family=Fustat:wght@200..800&amp;family=DM+Sans:opsz,wght@9..40,100..1000&amp;family=Poppins:wght@400;500;600;700&amp;family=Playwrite+US+Trad:wght@100..400&amp;display=swap">
+  <link rel="stylesheet" href="astryx.css">
+  <link rel="stylesheet" href="korea-audit.css">
+  <style>
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; min-width: 320px; }
+    :root { font-synthesis: none; text-rendering: optimizeLegibility; }
+    body { background: #f4f2ee; }
+    a { color: var(--color-text-blue, #1d4ed8); text-decoration: none; }
+    a:hover { color: var(--color-text-blue, #1d4ed8); text-decoration: underline; }
+    /* ---- app-only additions (server banner + live phone-recognition module) ---- */
+    .vx-offline-banner { padding: var(--spacing-3) var(--spacing-3) 0; }
+    .vx-offline-banner code {
+      font-family: 'JetBrains Mono', monospace; font-size: 11px;
+      background: rgba(0,0,0,0.06); padding: 1px 5px; border-radius: 4px; word-break: break-all;
+    }
+    .vx-live-grid { display: grid; grid-template-columns: minmax(280px, 380px) minmax(0, 1fr); gap: var(--spacing-4); align-items: start; }
+    @media (max-width: 900px) { .vx-live-grid { grid-template-columns: 1fr; } }
+    .vx-live-upload { display: flex; flex-direction: column; gap: var(--spacing-3); }
+    .vx-live-upload input[type='file'] {
+      font-size: 12px; width: 100%; padding: 10px;
+      border: 1px dashed rgba(0,0,0,0.25); border-radius: 8px;
+      background: rgba(0,0,0,0.02); cursor: pointer;
+    }
+    .vx-live-upload input[type='file']::file-selector-button {
+      font: inherit; font-size: 11.5px; margin-right: 8px; padding: 4px 10px;
+      border: 1px solid rgba(0,0,0,0.18); border-radius: 6px;
+      background: #fff; cursor: pointer;
+    }
+    .vx-live-stats { display: flex; gap: var(--spacing-4); flex-wrap: wrap; }
+    .vx-live-stats div { display: flex; flex-direction: column; gap: 2px; }
+    .vx-live-stats span { font-size: 11px; color: var(--color-text-secondary, #6b7280); }
+    .vx-live-stats strong { font-size: 15px; font-variant-numeric: tabular-nums; }
+    .vx-live-ipa { font-family: 'JetBrains Mono', monospace; font-size: 14px; line-height: 1.8;
+      word-break: break-all; padding: var(--spacing-2) 0; }
+    .vx-phone-strip { display: flex; flex-wrap: wrap; gap: 3px; }
+    .vx-phone-strip button {
+      font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1;
+      padding: 4px 6px; border-radius: 5px; border: 1px solid rgba(0,0,0,0.12);
+      background: rgba(255,255,255,0.7); cursor: pointer; display: flex; flex-direction: column;
+      gap: 2px; align-items: center;
+    }
+    .vx-phone-strip button small { font-size: 8.5px; color: var(--color-text-secondary, #6b7280); }
+    .vx-phone-strip button:hover { background: rgba(0,0,0,0.05); }
+    .vx-phone-strip button.is-boundary { opacity: 0.45; }
+    .vx-jump-row { display: flex; align-items: center; gap: var(--spacing-2); flex-wrap: wrap; margin-top: var(--spacing-2); }
+    .vx-live-empty { display: flex; flex-direction: column; align-items: center; gap: var(--spacing-2);
+      padding: var(--spacing-6); color: var(--color-text-secondary, #6b7280); font-size: 12.5px; }
+  </style>
+</head>
+<body>
+<div id="ka-root" class="ka-root ka-variant-a" data-astryx-theme="stone" data-astryx-media="light">
+  <div class="astryx-layout fill xojxgvx x1fcf3bl x1sa9bsh x6h7pi7 x12qplqi xenllk4" data-height="fill">
+    <div class="x-default-marker xrhngw9 xjsfl84 x1047aw6 xax9j7h x78zum5 xdt5ytf x12qplqi xenllk4">
+
+      <div id="offline-banner" class="vx-offline-banner" role="alert" hidden>
+        <div class="astryx-banner card warning x78zum5 x1cy8zhl x1txdalj x8o8v82 x1pzlopt x24i8r5 x1hviunn" data-container="card" data-status="warning">
+          <div class="astryx-banner-icon warning x78zum5 x6s0dn4 x2lah0s" data-status="warning" aria-hidden="true">
+            <span aria-hidden="true" class="astryx-icon md warning x3nfvp2 x6s0dn4 xl56j7k x2lah0s xs3pv69 xw4jnvo x1qx5ct2 xwsyq91" data-size="md" data-color="warning"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg></span>
+          </div>
+          <div class="x78zum5 xdt5ytf xxhr3t x98rzlu xeuugli">
+            <div class="x1ghz6dp xjb2p0i xcr08ib x2mo6ok x1kq96og x1tgivj0">서버 미기동</div>
+            <div class="x1ghz6dp xjb2p0i x141an7d x1sodnla x1ltkj2j xv1l7n4">API에 연결할 수 없습니다. 다음 명령으로 서버를 실행하세요: <code>zipa-env/bin/python -m uvicorn server.main:app --port 8765</code></div>
+          </div>
+        </div>
+      </div>
+
+      <header role="banner" data-divider="true" class="astryx-layout-header x2lah0s xso031l x1q0q8m5 xw8gpjh">
+        <div style="padding: var(--spacing-3);">
+          <div class="ka-header-primary">
+            <div class="ka-brand">
+              <span class="ka-brand-mark" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide"><path d="M2 10v3"></path><path d="M6 6v11"></path><path d="M10 3v18"></path><path d="M14 8v7"></path><path d="M18 5v13"></path><path d="M22 10v3"></path></svg>
+              </span>
+              <div>
+                <strong>VoxLedger</strong>
+                <span>감독 조사 데스크</span>
+              </div>
+            </div>
+            <div class="ka-breadcrumb">
+              <span>힝글리시 TM 오안내 감사</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
+              <span id="crumb-case">REG-HI-2026-017</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
+              <strong id="crumb-module">발음 변이 검색</strong>
+            </div>
+            <div class="ka-header-actions">
+              <span class="ka-environment-badge" title="합성 데이터 · 성능 시연 아님 · 위반 확정 아님" aria-label="검증 데이터: 합성 데이터이며 성능 시연 또는 법적 위반 확정이 아님">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide" aria-hidden="true"><circle cx="12" cy="16" r="1"></circle><rect x="3" y="10" width="18" height="12" rx="2"></rect><path d="M7 10V7a5 5 0 0 1 10 0v3"></path></svg>
+                검증 데이터
+              </span>
+              <span class="ka-statusdot-labeled">
+                <span id="header-dot" role="img" class="astryx-statusdot neutral x1rg5ohu x16rqkct x2lah0s x1xc55vz xdk7pt x1q5y3ey" data-variant="neutral"></span>
+                <span id="header-dot-label">연결 확인 중</span>
+              </span>
+            </div>
+          </div>
+          <div class="ka-search-toolbar">
+            <nav id="module-nav" class="ka-module-nav" aria-label="조사 업무"></nav>
+            <div id="issue-switch" class="ka-issue-switch" aria-label="조사 유형"></div>
+            <div class="ka-power-search">
+              <div class="astryx-power-search">
+                <div class="astryx-field x78zum5 xdt5ytf">
+                  <div role="group" aria-label="힝글리시 발음 검색" class="astryx-tokenizer md x9f619 x1vjfegm x78zum5 x6s0dn4 x1litavf x1y0btm7 xvy26l8 x6q1khz x1832zxr xvdfih8 x10xzikg x12zzom9 xuedmi6 x12w9bfk xlr8y92 x1gnnqk1 x12y27fx xuihb5h x1a2a7pz x1n2onr6 x1a02dak xzye2dw x1ed109x xt7dq6l x1x7cmac xx2oswg xajebq8 x1uogy3y" data-size="md">
+                    <span class="ka-ps-start-icon" aria-hidden="true">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide"><path d="m21 21-4.34-4.34"></path><circle cx="11" cy="11" r="8"></circle></svg>
+                    </span>
+                    <input id="search-input" type="text" aria-label="힝글리시 발음 검색" placeholder="예: free, compulsory, Coragen" autocomplete="off" class="x1lliihq xc342km xng3xce x1717udv x9ynric xjm74w1 x6pjikd xw6l6zx x1tgivj0 xjbqb8w x1a2a7pz xeyghm5 x1fns5xo xfoc8du xnalus7 x2a0j69" value="">
+                    <span id="result-count" class="ka-ps-result-count">0건 화면 후보</span>
+                    <span class="ka-ps-end">
+                      <button id="run-search" type="button" class="astryx-button primary sm x1n2onr6 x3nfvp2 x6s0dn4 xl56j7k x1txdalj xce4md1 xrrkdod xc342km xng3xce x1jxw6zd xjb2p0i xcr08ib x1kq96og x1e4wzip xuxw1ft x1ypdohk xrafxwg xuedmi6 x12w9bfk xlr8y92 x6k0iem x1ewilqj x17wrial x1ilzqfv xq8i9tn x17nn4n9 xkzo27j x1wfwxd8 x13aywxo x3oybdh xk4oym4" data-variant="primary" data-size="sm">
+                        <span class="xjp7ctv">
+                          <span class="x3nfvp2 x6s0dn4 xl56j7k x2lah0s x1kky2od xlup9mm x1j61zf2"><span aria-hidden="true" class="astryx-icon sm inherit x3nfvp2 x6s0dn4 xl56j7k x2lah0s x1heor9g x1kky2od xlup9mm x1j61zf2" data-size="sm" data-color="inherit"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide"><path d="m21 21-4.34-4.34"></path><circle cx="11" cy="11" r="8"></circle></svg></span></span>
+                          <span class="xb3r6kr xlyipyv xeuugli">검색 실행</span>
+                        </span>
+                      </button>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="ka-layout-body x78zum5 x1q0g3np x98rzlu x2lwn1j">
+
+        <!-- ===================== 모듈 1 · 검색 데스크 ===================== -->
+        <div id="module-search" class="ka-layout-body x78zum5 x1q0g3np x98rzlu x2lwn1j" style="display: contents;">
+          <div role="navigation" aria-label="조사 조건" data-divider="start" data-screen-label="검색 데스크 — 조사 조건" class="astryx-layout-panel ka-pronunciation-panel x9f619 x2lah0s x1peupej xqty4a xg476vw x408pgh xikqloz xjmgx01 xi9ns85 x5lhr3w x139j0dd xysyzu8 x1lun4ml x18b5jzi x1gejf6u" style="--x-width: 312px; width: 312px; padding: var(--spacing-3); overflow-y: auto;">
+            <section class="ka-side-section">
+              <div class="ka-section-heading">
+                <span>조사 유형</span>
+                <span id="hypo-badge" class="astryx-badge info x3nfvp2 x6s0dn4 xl56j7k xzye2dw x1grt7ep xt970qd xf314gf xjspbzw xjb2p0i x141an7d x1ltkj2j x1e4wzip xuxw1ft x1ewilqj x17wrial" data-variant="info">가설</span>
+              </div>
+              <h2 id="term-hypothesis">—</h2>
+            </section>
+            <section class="ka-side-section">
+              <div class="ka-section-heading">
+                <span>검색 용어</span>
+                <small>용어집 HI-0.1</small>
+              </div>
+              <div id="term-chips" class="ka-term-chips"></div>
+              <div class="ka-context-logic">
+                <div>
+                  <span>포함 문맥</span>
+                  <strong id="ctx-include">—</strong>
+                </div>
+                <div>
+                  <span>제외 문맥</span>
+                  <strong id="ctx-exclude">—</strong>
+                </div>
+              </div>
+            </section>
+            <section class="ka-side-section">
+              <div class="ka-section-heading">
+                <span>발음 변이</span>
+                <small>G2P·confusion</small>
+              </div>
+              <div id="pron-list" class="ka-pronunciation-list"></div>
+              <div id="example-note" class="ka-example-note" style="display: none;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path><path d="M20 3v4"></path><path d="M22 5h-4"></path><path d="M4 17v2"></path><path d="M5 18H3"></path></svg>
+                <span id="example-note-text"></span>
+              </div>
+            </section>
+            <section class="ka-side-section">
+              <div class="ka-section-heading">
+                <span>검색 조합</span>
+                <span id="combo-badge" class="astryx-badge info x3nfvp2 x6s0dn4 xl56j7k xzye2dw x1grt7ep xt970qd xf314gf xjspbzw xjb2p0i x141an7d x1ltkj2j x1e4wzip xuxw1ft x1ewilqj x17wrial" data-variant="info">변이 · 55%</span>
+              </div>
+              <div class="ka-logic-row">
+                <button id="mode-variants" type="button" class="is-active">변이 검색</button>
+                <button id="mode-baseline" type="button">표준 발음</button>
+                <label>
+                  <input id="exclude-negated" type="checkbox">
+                  부정 문맥 제외
+                </label>
+              </div>
+              <label class="ka-slider">
+                <span>
+                  발음 유사도
+                  <strong id="threshold-label">55%</strong>
+                </span>
+                <input id="threshold" type="range" min="0.55" max="0.95" step="0.01" value="0.55">
+              </label>
+              <div class="ka-load-preview">
+                <div>
+                  <strong id="current-count">0</strong>
+                  <span>현재 후보</span>
+                </div>
+                <div>
+                  <strong id="candidate-compact">0</strong>
+                  <span>전체 후보</span>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <div class="x2lwn1j xeuugli x1iyjqo2 ka-layout-main">
+            <main role="main" aria-label="발음 검색 결과" data-screen-label="검색 데스크 — 결과" class="astryx-layout-content ka-results-content x9f619 x5yr21d x98rzlu x2lwn1j xwjyata xqty4a x1ioh5az xg476vw xsg11nj x408pgh xikqloz xjmgx01 xi9ns85 xpc6k2p xysyzu8" style="padding: 0;">
+              <div class="ka-results-summary">
+                <div>
+                  <span>검색 실행</span>
+                  <strong id="run-id">—</strong>
+                </div>
+                <div class="ka-result-kpis">
+                  <div>
+                    <strong id="kpi-total">0</strong>
+                    <span>전체 후보 추정</span>
+                  </div>
+                  <div>
+                    <strong id="kpi-hours">0h</strong>
+                    <span>예상 검토량</span>
+                  </div>
+                  <div>
+                    <strong id="kpi-guard">0</strong>
+                    <span>부정문맥 방어</span>
+                  </div>
+                </div>
+              </div>
+              <div class="ka-table-frame">
+                <div id="results-wrapper" tabindex="0" role="group" aria-label="발음 검색 결과 표" class="astryx-table-scroll-wrapper xw2csxc x5lxg6s xojxgvx x1fcf3bl xx6qvi6 xkibk3 xlayyun" style="display: none;">
+                  <table class="astryx-base-table xh8yej3 x1mwwwfo x1gukg7c x140o2bo xjb2p0i x1tgivj0 astryx-table ka-results-table">
+                    <thead class="astryx-table-header">
+                      <tr class="astryx-table-row x139im0d">
+                        <th scope="col" class="astryx-table-header-cell x2mo6ok xv1l7n4 x1yc453h xce4md1 xrrkdod xcr08ib x9f619 x92x3c3 x1q0q8m5 xw8gpjh xb3r6kr xlyipyv xuxw1ft x1m189uc x9bi00s xpilulx" style="width: 86px;">검출 시점</th>
+                        <th scope="col" class="astryx-table-header-cell x2mo6ok xv1l7n4 x1yc453h xce4md1 xrrkdod xcr08ib x9f619 x92x3c3 x1q0q8m5 xw8gpjh xb3r6kr xlyipyv xuxw1ft x1m189uc x9bi00s xpilulx" style="min-width: 176px;">검출 발화</th>
+                        <th scope="col" class="astryx-table-header-cell ka-cell-end x2mo6ok xv1l7n4 x1yc453h xce4md1 xrrkdod xcr08ib x9f619 x92x3c3 x1q0q8m5 xw8gpjh xb3r6kr xlyipyv xuxw1ft x1m189uc x9bi00s xpilulx" style="width: 84px;">발음 점수</th>
+                        <th scope="col" class="astryx-table-header-cell ka-cell-end x2mo6ok xv1l7n4 x1yc453h xce4md1 xrrkdod xcr08ib x9f619 x92x3c3 x1q0q8m5 xw8gpjh xb3r6kr xlyipyv xuxw1ft x1m189uc x9bi00s xpilulx" style="width: 78px;">주변 문맥</th>
+                        <th scope="col" class="astryx-table-header-cell ka-cell-end x2mo6ok xv1l7n4 x1yc453h xce4md1 xrrkdod xcr08ib x9f619 x92x3c3 x1q0q8m5 xw8gpjh xb3r6kr xlyipyv xuxw1ft x1m189uc x9bi00s xpilulx" style="width: 88px;">증거 완전성</th>
+                        <th scope="col" class="astryx-table-header-cell x2mo6ok xv1l7n4 x1yc453h xce4md1 xrrkdod xcr08ib x9f619 x92x3c3 x1q0q8m5 xw8gpjh xb3r6kr xlyipyv xuxw1ft x1m189uc x9bi00s xpilulx" style="width: 96px;">검토 상태</th>
+                      </tr>
+                    </thead>
+                    <tbody id="results-tbody" class="astryx-table-body"></tbody>
+                  </table>
+                </div>
+                <div id="empty-state" class="ka-empty-state">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide"><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="M4.268 21a2 2 0 0 0 1.727 1H18a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v3"></path><path d="m9 18-1.5-1.5"></path><circle cx="5" cy="14" r="3"></circle></svg>
+                  <strong id="empty-title">검색을 실행하세요.</strong>
+                  <span id="empty-desc">좌측에서 검색어를 고르고 검색 실행을 누르면 실제 음소 인덱스를 조회합니다.</span>
+                </div>
+              </div>
+              <footer class="ka-table-footer">
+                <span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5V19A9 3 0 0 0 21 19V5"></path><path d="M3 12A9 3 0 0 0 21 12"></path></svg>
+                  <span id="generated-at">—</span>
+                </span>
+                <span id="index-meta">용어집 HI-0.1 · 음성 인덱스 —</span>
+              </footer>
+            </main>
+          </div>
+
+          <button id="resize-handle" type="button" class="ka-resize-handle" aria-label="증거 상세 패널 너비 조절"></button>
+
+          <div id="inspector" role="complementary" aria-label="선택된 증거 상세" data-screen-label="검색 데스크 — 증거 상세" class="astryx-layout-panel ka-inspector x9f619 x2lah0s x1peupej xqty4a xg476vw x408pgh xikqloz xjmgx01 xi9ns85 x5lhr3w x139j0dd xysyzu8 x1lun4ml x18b5jzi x1gejf6u" style="--x-width: 360px; width: 360px; padding: var(--spacing-3);">
+            <div id="inspector-empty" class="ka-inspector-empty">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide"><path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"></path></svg>
+              <strong>검토할 후보를 선택하세요.</strong>
+            </div>
+            <div id="inspector-content" hidden></div>
+          </div>
+        </div>
+
+        <!-- ===================== 모듈 2 · 라이브 음소인식 ===================== -->
+        <div id="module-live" class="x2lwn1j xeuugli x1iyjqo2 ka-layout-main" style="display: none;">
+          <main role="main" aria-label="라이브 음소인식" data-screen-label="라이브 음소인식" class="astryx-layout-content ka-results-content x9f619 x5yr21d x98rzlu x2lwn1j xwjyata xqty4a x1ioh5az xg476vw xsg11nj x408pgh xikqloz xjmgx01 xi9ns85 xpc6k2p xysyzu8" style="padding: var(--spacing-4); overflow-y: auto;">
+            <div class="ka-page-title">
+              <div>
+                <span>ZIPA 런타임</span>
+                <h1>라이브 음소인식</h1>
+                <div class="ka-page-meta">
+                  <span>REG-HI-2026-017</span>
+                  <span id="live-model-meta">모델 —</span>
+                  <span>16kHz mono WAV 권장</span>
+                </div>
+              </div>
+              <span id="live-badge" class="astryx-badge neutral x3nfvp2 x6s0dn4 xl56j7k xzye2dw x1grt7ep xt970qd xf314gf xjspbzw xjb2p0i x141an7d x1ltkj2j x1e4wzip xuxw1ft x17x4s8c x1tgivj0" data-variant="neutral">대기</span>
+            </div>
+            <div class="vx-live-grid">
+              <div class="astryx-card default x2kkz0m x153u1i6 x7giv3 x1de1mus x9f619 xjmlhfd x1ihxwbr x1rqz8me x1omyuck x14rzhog xjej9fs x4poyjn x1u1kw4e x1litavf x1y0btm7 xvy26l8 xs19ii7 x12frdag x1nex4ik xbv1mwh" data-variant="default" style="--astryx-card-padding: var(--spacing-4);">
+                <div class="ka-card-heading">
+                  <div>
+                    <span>입력</span>
+                    <h2>오디오 업로드</h2>
+                  </div>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide"><path d="M12 13v8"></path><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="m8 17 4-4 4 4"></path></svg>
+                </div>
+                <div class="vx-live-upload">
+                  <input id="live-file" type="file" accept=".wav,audio/wav,audio/x-wav" aria-label="인식할 WAV 파일">
+                  <audio id="live-audio" controls preload="metadata" hidden style="width: 100%;"></audio>
+                  <button id="live-run" type="button" class="astryx-button primary sm x1n2onr6 x3nfvp2 x6s0dn4 xl56j7k x1txdalj xce4md1 xrrkdod xc342km xng3xce x1jxw6zd xjb2p0i xcr08ib x1kq96og x1e4wzip xuxw1ft x1ypdohk xrafxwg xuedmi6 x12w9bfk xlr8y92 x6k0iem x1ewilqj x17wrial x1ilzqfv xq8i9tn x17nn4n9 xkzo27j x1wfwxd8 x13aywxo x3oybdh xk4oym4" data-variant="primary" data-size="sm" disabled>
+                    <span class="xjp7ctv"><span class="xb3r6kr xlyipyv xeuugli">음소 인식 실행</span></span>
+                  </button>
+                  <div id="live-status" style="font-size: 12px; color: var(--color-text-secondary, #6b7280);">WAV 파일을 선택하면 ZIPA 힌디 음소 인식을 실행합니다.</div>
+                </div>
+              </div>
+              <div class="astryx-card default x2kkz0m x153u1i6 x7giv3 x1de1mus x9f619 xjmlhfd x1ihxwbr x1rqz8me x1omyuck x14rzhog xjej9fs x4poyjn x1u1kw4e x1litavf x1y0btm7 xvy26l8 xs19ii7 x12frdag x1nex4ik xbv1mwh" data-variant="default" style="--astryx-card-padding: var(--spacing-4);">
+                <div class="ka-card-heading">
+                  <div>
+                    <span>출력</span>
+                    <h2>IPA · 음소 타임라인</h2>
+                  </div>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide"><path d="M2 10v3"></path><path d="M6 6v11"></path><path d="M10 3v18"></path><path d="M14 8v7"></path><path d="M18 5v13"></path><path d="M22 10v3"></path></svg>
+                </div>
+                <div id="live-empty" class="vx-live-empty">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"></path><path d="M16 9a5 5 0 0 1 0 6"></path><path d="M19.364 18.364a9 9 0 0 0 0-12.728"></path></svg>
+                  <strong>아직 인식 결과가 없습니다.</strong>
+                  <span>좌측에서 WAV를 업로드하고 인식을 실행하세요.</span>
+                </div>
+                <div id="live-result" hidden>
+                  <div class="vx-live-stats">
+                    <div><span>오디오 길이</span><strong id="live-seconds">—</strong></div>
+                    <div><span>RTF</span><strong id="live-rtf">—</strong></div>
+                    <div><span>음소 수</span><strong id="live-phone-count">—</strong></div>
+                  </div>
+                  <div class="ka-transcript" style="margin-top: var(--spacing-3);">
+                    <span>IPA 전사</span>
+                    <div class="vx-live-ipa"><code id="live-ipa"></code></div>
+                  </div>
+                  <div class="ka-transcript">
+                    <span>음소 타임라인 — 클릭하면 해당 시점으로 이동</span>
+                    <div id="live-phones" class="vx-phone-strip" style="margin-top: var(--spacing-2);"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </main>
+        </div>
+
+        <!-- ===================== 모듈 3 · 커버리지 (정적) ===================== -->
+        <div id="module-coverage" class="x2lwn1j xeuugli x1iyjqo2 ka-layout-main" style="display: none;">
+          <main role="main" aria-label="제출 모집단" data-screen-label="커버리지 — 제출 모집단" class="astryx-layout-content ka-coverage-content x9f619 x5yr21d x98rzlu x2lwn1j xwjyata xqty4a x1ioh5az xg476vw xsg11nj x408pgh xikqloz xjmgx01 xi9ns85 xpc6k2p xysyzu8" style="padding: var(--spacing-4);">
+            <div class="ka-page-title">
+              <div>
+                <span>사건 범위</span>
+                <h1>제출 모집단</h1>
+                <div class="ka-page-meta">
+                  <span>REG-HI-2026-017</span>
+                  <span>음성 인덱스 SIM-KO-PHONE-0.2</span>
+                  <span>마지막 갱신 2026-07-18 16:30 KST</span>
+                </div>
+              </div>
+              <span class="astryx-badge success x3nfvp2 x6s0dn4 xl56j7k xzye2dw x1grt7ep xt970qd xf314gf xjspbzw xjb2p0i x141an7d x1ltkj2j x1e4wzip xuxw1ft xdsz4j9 xri61p4" data-variant="success">처리 완료</span>
+            </div>
+            <div class="ka-kpi-grid">
+              <div class="astryx-card default x2kkz0m x153u1i6 x7giv3 x1de1mus x9f619 xjmlhfd x1ihxwbr x1rqz8me x1omyuck x14rzhog xjej9fs x4poyjn x1u1kw4e x1litavf x1y0btm7 xvy26l8 xs19ii7 x12frdag x1nex4ik xbv1mwh" data-variant="default" style="--astryx-card-padding: var(--spacing-4);">
+                <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide"><path d="M17.5 22h.5a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v3"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="M2 19a2 2 0 1 1 4 0v1a2 2 0 1 1-4 0v-4a6 6 0 0 1 12 0v4a2 2 0 1 1-4 0v-1a2 2 0 1 1 4 0"></path></svg>
+                <span>수신</span>
+                <strong>84,216</strong>
+                <small>3개 보험사 · 6개 제출 소스</small>
+              </div>
+              <div class="astryx-card default x2kkz0m x153u1i6 x7giv3 x1de1mus x9f619 xjmlhfd x1ihxwbr x1rqz8me x1omyuck x14rzhog xjej9fs x4poyjn x1u1kw4e x1litavf x1y0btm7 xvy26l8 xs19ii7 x12frdag x1nex4ik xbv1mwh" data-variant="default" style="--astryx-card-padding: var(--spacing-4);">
+                <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"></path><path d="m6.08 9.5-3.5 1.6a1 1 0 0 0 0 1.81l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9a1 1 0 0 0 0-1.83l-3.5-1.59"></path><path d="m6.08 14.5-3.5 1.6a1 1 0 0 0 0 1.81l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9a1 1 0 0 0 0-1.83l-3.5-1.59"></path></svg>
+                <span>범위 내</span>
+                <strong>82,976</strong>
+                <small>중복 1,240건 별도 제외</small>
+              </div>
+              <div class="astryx-card default x2kkz0m x153u1i6 x7giv3 x1de1mus x9f619 xjmlhfd x1ihxwbr x1rqz8me x1omyuck x14rzhog xjej9fs x4poyjn x1u1kw4e x1litavf x1y0btm7 xvy26l8 xs19ii7 x12frdag x1nex4ik xbv1mwh" data-variant="default" style="--astryx-card-padding: var(--spacing-4);">
+                <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5V19A9 3 0 0 0 21 19V5"></path><path d="M3 12A9 3 0 0 0 21 12"></path></svg>
+                <span>음성 인덱싱</span>
+                <strong>82,976</strong>
+                <small>478,680분 처리</small>
+              </div>
+              <div class="astryx-card default x2kkz0m x153u1i6 x7giv3 x1de1mus x9f619 xjmlhfd x1ihxwbr x1rqz8me x1omyuck x14rzhog xjej9fs x4poyjn x1u1kw4e x1litavf x1y0btm7 xvy26l8 xs19ii7 x12frdag x1nex4ik xbv1mwh" data-variant="default" style="--astryx-card-padding: var(--spacing-4);">
+                <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide"><circle cx="12" cy="12" r="10"></circle><path d="m9 12 2 2 4-4"></path></svg>
+                <span>차단</span>
+                <strong>0</strong>
+                <small>커버리지 100.00%</small>
+              </div>
+            </div>
+            <div class="astryx-card default ka-gate-card is-complete x2kkz0m x153u1i6 x7giv3 x1de1mus x9f619 xjmlhfd x1ihxwbr x1rqz8me x1omyuck x14rzhog xjej9fs x4poyjn x1u1kw4e x1litavf x1y0btm7 xvy26l8 xs19ii7 x12frdag x1nex4ik xbv1mwh" data-variant="default" style="--astryx-card-padding: var(--spacing-4);">
+              <div class="ka-gate-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></svg>
+              </div>
+              <div>
+                <span class="astryx-badge success x3nfvp2 x6s0dn4 xl56j7k xzye2dw x1grt7ep xt970qd xf314gf xjspbzw xjb2p0i x141an7d x1ltkj2j x1e4wzip xuxw1ft xdsz4j9 xri61p4" data-variant="success">완료 가능</span>
+                <h3>범위 검증 완료</h3>
+                <p>검색 커버리지 100% · 원본 무결성 확인</p>
+              </div>
+            </div>
+            <div class="ka-coverage-grid">
+              <div class="astryx-card default ka-funnel-card x2kkz0m x153u1i6 x7giv3 x1de1mus x9f619 xjmlhfd x1ihxwbr x1rqz8me x1omyuck x14rzhog xjej9fs x4poyjn x1u1kw4e x1litavf x1y0btm7 xvy26l8 xs19ii7 x12frdag x1nex4ik xbv1mwh" data-variant="default" style="--astryx-card-padding: var(--spacing-4);">
+                <div class="ka-card-heading">
+                  <div>
+                    <span>처리 단계</span>
+                    <h2>모집단 처리</h2>
+                  </div>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide"><path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"></path><path d="M14 13.12c0 2.38 0 6.38-1 8.88"></path><path d="M17.29 21.02c.12-.6.43-2.3.5-3.02"></path><path d="M2 12a10 10 0 0 1 18-6"></path><path d="M2 16h.01"></path><path d="M21.8 16c.2-2 .131-5.354 0-6"></path><path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2"></path><path d="M8.65 22c.21-.66.45-1.32.57-2"></path><path d="M9 6.8a6 6 0 0 1 9 5.2v2"></path></svg>
+                </div>
+                <div class="ka-funnel-row">
+                  <div><span>수신 파일</span><strong>84,216</strong></div>
+                  <div><span style="width: 100%;"></span></div>
+                </div>
+                <div class="ka-funnel-row">
+                  <div><span>중복 제거 후 범위 내</span><strong>82,976</strong></div>
+                  <div><span style="width: 91%;"></span></div>
+                </div>
+                <div class="ka-funnel-row">
+                  <div><span>음성 인덱스 생성</span><strong>82,976</strong></div>
+                  <div><span style="width: 100%;"></span></div>
+                </div>
+                <div class="ka-funnel-row">
+                  <div><span>현재 검색 후보</span><strong id="coverage-candidates">1,204</strong></div>
+                  <div><span style="width: 18%;"></span></div>
+                </div>
+                <div class="ka-complete-note">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide"><path d="M20 6 9 17l-5-5"></path></svg>
+                  미인덱싱 0건
+                </div>
+              </div>
+              <div class="astryx-card default ka-distribution-card x2kkz0m x153u1i6 x7giv3 x1de1mus x9f619 xjmlhfd x1ihxwbr x1rqz8me x1omyuck x14rzhog xjej9fs x4poyjn x1u1kw4e x1litavf x1y0btm7 xvy26l8 xs19ii7 x12frdag x1nex4ik xbv1mwh" data-variant="default" style="--astryx-card-padding: var(--spacing-4);">
+                <div class="ka-card-heading">
+                  <div>
+                    <span>후보 분포</span>
+                    <h2>후보 및 검토 진행</h2>
+                  </div>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide"><path d="m12 14 4-4"></path><path d="M3.34 19a10 10 0 1 1 17.32 0"></path></svg>
+                </div>
+                <div class="ka-distribution-bars">
+                  <div>
+                    <div><span>무료 오인 안내</span><strong>2,189</strong></div>
+                    <div class="is-orange"><span style="width: 82%;"></span></div>
+                  </div>
+                  <div>
+                    <div><span>강제 연계 판매</span><strong>1,719</strong></div>
+                    <div class="is-purple"><span style="width: 64%;"></span></div>
+                  </div>
+                  <div>
+                    <div><span>부정문맥·오탐 방어</span><strong>218</strong></div>
+                    <div class="is-green"><span style="width: 26%;"></span></div>
+                  </div>
+                </div>
+                <div class="ka-review-progress">
+                  <div>
+                    <span>사람 검토 진행</span>
+                    <strong>1,028 / 3,908</strong>
+                  </div>
+                  <div class="astryx-progressbar accent x78zum5 xdt5ytf xzye2dw xh8yej3 x900493" data-variant="accent">
+                    <div role="progressbar" aria-label="사람 검토 진행률" class="astryx-progressbar-track xh8yej3 xdk7pt xwmxj5m xjspbzw xb3r6kr">
+                      <div class="astryx-progressbar-fill accent x5yr21d xjspbzw xxrbq2n x80gvsz xlr8y92 x1ewilqj" data-variant="accent" style="width: 26.3%;"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="astryx-card default ka-coverage-table-card x2kkz0m x153u1i6 x7giv3 x1de1mus x9f619 xjmlhfd x1ihxwbr x1rqz8me x1omyuck x14rzhog xjej9fs x4poyjn x1u1kw4e x1litavf x1y0btm7 xvy26l8 xs19ii7 x12frdag x1nex4ik xbv1mwh" data-variant="default" style="--astryx-card-padding: 0px;">
+              <div class="ka-coverage-table-heading">
+                <div>
+                  <span>제출 소스</span>
+                  <h2>제출 소스 처리 상태</h2>
+                </div>
+                <span class="astryx-badge success x3nfvp2 x6s0dn4 xl56j7k xzye2dw x1grt7ep xt970qd xf314gf xjspbzw xjb2p0i x141an7d x1ltkj2j x1e4wzip xuxw1ft xdsz4j9 xri61p4" data-variant="success">82,976/82,976</span>
+              </div>
+              <div tabindex="0" role="group" aria-label="제출 소스 처리 상태 표" class="astryx-table-scroll-wrapper xw2csxc x5lxg6s xojxgvx x1fcf3bl xx6qvi6 xkibk3 xlayyun">
+                <table class="astryx-base-table xh8yej3 x1mwwwfo x1gukg7c x140o2bo xjb2p0i x1tgivj0 astryx-table">
+                  <thead class="astryx-table-header">
+                    <tr class="astryx-table-row x139im0d">
+                      <th scope="col" class="astryx-table-header-cell x2mo6ok xv1l7n4 x1yc453h xce4md1 xrrkdod xcr08ib x9f619 x92x3c3 x1q0q8m5 xw8gpjh xb3r6kr xlyipyv xuxw1ft x1m189uc x9bi00s xpilulx" style="min-width: 180px;">제출 소스</th>
+                      <th scope="col" class="astryx-table-header-cell ka-cell-end x2mo6ok xv1l7n4 x1yc453h xce4md1 xrrkdod xcr08ib x9f619 x92x3c3 x1q0q8m5 xw8gpjh xb3r6kr xlyipyv xuxw1ft x1m189uc x9bi00s xpilulx" style="width: 100px;">수신</th>
+                      <th scope="col" class="astryx-table-header-cell ka-cell-end x2mo6ok xv1l7n4 x1yc453h xce4md1 xrrkdod xcr08ib x9f619 x92x3c3 x1q0q8m5 xw8gpjh xb3r6kr xlyipyv xuxw1ft x1m189uc x9bi00s xpilulx" style="width: 100px;">인덱싱</th>
+                      <th scope="col" class="astryx-table-header-cell ka-cell-end x2mo6ok xv1l7n4 x1yc453h xce4md1 xrrkdod xcr08ib x9f619 x92x3c3 x1q0q8m5 xw8gpjh xb3r6kr xlyipyv xuxw1ft x1m189uc x9bi00s xpilulx" style="width: 100px;">범위 제외</th>
+                      <th scope="col" class="astryx-table-header-cell ka-cell-end x2mo6ok xv1l7n4 x1yc453h xce4md1 xrrkdod xcr08ib x9f619 x92x3c3 x1q0q8m5 xw8gpjh xb3r6kr xlyipyv xuxw1ft x1m189uc x9bi00s xpilulx" style="width: 90px;">후보율</th>
+                      <th scope="col" class="astryx-table-header-cell x2mo6ok xv1l7n4 x1yc453h xce4md1 xrrkdod xcr08ib x9f619 x92x3c3 x1q0q8m5 xw8gpjh xb3r6kr xlyipyv xuxw1ft x1m189uc x9bi00s xpilulx" style="width: 116px;">상태</th>
+                    </tr>
+                  </thead>
+                  <tbody id="coverage-tbody" class="astryx-table-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </main>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

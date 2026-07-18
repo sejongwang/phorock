@@ -1,0 +1,32 @@
+[
+  {
+    "id": "false-free",
+    "name": "무료 오인 안내",
+    "hypothesis": "유료성 설명 누락 가능성",
+    "description": "유료 플랜·프리미엄을 무료, 추가 비용 없음으로 안내한 힝글리시 표현을 찾습니다.",
+    "searchTerms": ["bilkul free", "premium nahi lagega", "extra charge nahi"],
+    "contextTerms": ["प्लान", "premium", "free", "charge", "साल"],
+    "negativeTerms": ["free नहीं है", "premium लगेगा", "हर महीने"],
+    "pronunciations": []
+  },
+  {
+    "id": "forced-bundling",
+    "name": "강제 연계",
+    "hypothesis": "의사에 반한 연계계약 가능성",
+    "description": "승인·대출·상품 접수를 부가 보험이나 특약 가입과 강제로 연결한 힝글리시 표현을 찾습니다.",
+    "searchTerms": ["saath mein lena padega", "compulsory hai", "approval nahi milega"],
+    "contextTerms": ["approval", "policy", "insurance", "cover", "loan", "rider"],
+    "negativeTerms": ["compulsory नहीं", "optional है", "बिल्कुल optional"],
+    "pronunciations": []
+  },
+  {
+    "id": "entity",
+    "name": "개체·상품명",
+    "hypothesis": "특정 상품명·인명 언급 여부",
+    "description": "농약 상품명(Coragen, Bavistin)과 인명(Chaudhary) 등 고유 개체가 언급된 구간을 찾습니다.",
+    "searchTerms": ["Coragen", "Bavistin", "Chaudhary"],
+    "contextTerms": ["spray", "powder", "लीटर", "पानी", "नाम"],
+    "negativeTerms": ["नहीं मिला", "गलत नाम"],
+    "pronunciations": []
+  }
+]

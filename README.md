@@ -3,10 +3,23 @@
 한국 보험 감사 데스크 UI 위에서 **실제 ZIPA 힌디 음소인식 + 인도식 발음 변이 검색**이 동작하는 데모.
 케이스: `REG-HI-2026-017 · 힝글리시 TM 오안내 감사` (클립 14건: positive 11 + neutral 3).
 
+## 사전 준비 (1회)
+
+ZIPA 모델(310MB)은 레포에 포함되지 않습니다. `~/zipa-mac`에 모델·가상환경을 준비합니다:
+
+```bash
+python3 -m venv ~/zipa-mac/zipa-env && source ~/zipa-mac/zipa-env/bin/activate
+pip install torch torchaudio onnxruntime lhotse soundfile numpy fastapi uvicorn python-multipart huggingface_hub
+hf download anyspeech/zipa-large-crctc-ns-800k model.int8.onnx tokens.txt --local-dir ~/zipa-mac/zipa_model
+```
+
+주의(Apple Silicon 실측): 추론은 **CoreML EP** 필수(CPU EP는 int8 오실행), 특징 추출은 **lhotse fbank**만
+(`torchaudio.compliance.kaldi` 사용 금지) — 상세는 `CONTRACT.md` §2.
+
 ## 실행
 
 ```bash
-cd /Users/junehwi/indoro/voxledger-audit && /Users/junehwi/zipa-mac/zipa-env/bin/python -m uvicorn server.main:app --port 8765
+cd <repo-root> && ~/zipa-mac/zipa-env/bin/python -m uvicorn server.main:app --port 8765
 ```
 
 브라우저: **http://localhost:8765**
@@ -28,3 +41,9 @@ cd /Users/junehwi/indoro/voxledger-audit && /Users/junehwi/zipa-mac/zipa-env/bin
 2. **G2P/변이** `server/g2p.py`+`variants.py` — 검색어(데바나가리·영어 차용어)를 인도식 IPA로 변환하고 confusion 규칙(breathy 평탄화, retroflex↔dental, 장단 중화 등, rule·weight 라벨)으로 발음 변이를 확장.
 3. **매처** `server/matcher.py` — confusion 가중 Smith-Waterman 로컬 정렬로 변이 phone 열 vs 클립 phone 열을 매칭, score·시간 스팬 산출(베이스라인 useVariants=false 모드 내장).
 4. **API/UI** `server/main.py`(FastAPI :8765) — `/api/bootstrap`·`/api/search`·`/api/transcribe`·`/audio/*` 제공, `app/`(plain HTML+JS, 디자인 원본 CSS 그대로)을 정적 서빙.
+
+## 모델 출처 · 라이선스
+
+음소인식은 **ZIPA** ([lingjzhu/zipa](https://github.com/lingjzhu/zipa), MIT · Zhu et al., ACL 2025)의
+[`anyspeech/zipa-large-crctc-ns-800k`](https://huggingface.co/anyspeech/zipa-large-crctc-ns-800k) int8 ONNX를 사용합니다.
+전체 서드파티 고지·BibTeX 인용은 [THIRD_PARTY.md](THIRD_PARTY.md) 참고.

@@ -2174,6 +2174,56 @@
   opacity: 0.7;
 }
 
+.ka-hit-memo-cell {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.ka-hit-memo-input {
+  width: 100%;
+  min-width: 0;
+  padding: 3px 6px;
+  overflow: hidden;
+  color: var(--ka-ink);
+  font: inherit;
+  font-size: 10.5px;
+  text-align: right;
+  text-overflow: ellipsis;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 5px;
+}
+
+.ka-hit-memo-input::placeholder {
+  color: var(--ka-muted);
+  opacity: 0.7;
+}
+
+.ka-hit-memo-input:hover {
+  background: var(--ka-paper);
+  border-color: var(--ka-line);
+}
+
+.ka-hit-memo-input:focus {
+  text-align: left;
+  background: var(--ka-paper);
+  border-color: var(--color-border-blue);
+  outline: none;
+}
+
+.ka-hit-memo-extra {
+  flex: 0 0 auto;
+  padding: 1px 5px;
+  color: var(--ka-muted);
+  font-size: 9.5px;
+  font-weight: 700;
+  background: var(--color-background-muted);
+  border-radius: 999px;
+}
+
 .ka-hit-score {
   font-size: 11px;
   text-align: right;

@@ -439,13 +439,19 @@
         html += '<div class="ka-day-rows">';
         g.hits.forEach(function (h) {
           var isSel = sel && h.id === sel.id;
-          var memoText = evidenceMemosFor(h.id).join(' · ');
+          var evMemos = evidenceMemosFor(h.id);
+          var firstIt = firstEvidenceItemFor(h.id);
+          var memoVal = firstIt && firstIt.memo ? String(firstIt.memo) : '';
+          var extraN = Math.max(0, evMemos.length - (memoVal.trim() ? 1 : 0));
           html += '<article class="ka-hit-row' + (isSel ? ' is-selected' : '') + '" data-hit="' + esc(h.id) + '" draggable="true" tabindex="0" aria-selected="' + (isSel ? 'true' : 'false') + '">' +
             '<button type="button" class="ka-hit-time" data-seek="' + toSeconds(h.spanStart) + '" title="Play detected span">' + esc(h.matchAt) + '</button>' +
             '<div class="ka-hit-text">' +
             '<span>' + highlightTranscript(h) + '</span>' +
             '</div>' +
-            '<div class="ka-hit-memo' + (memoText ? '' : ' is-empty') + '" title="' + esc(memoText) + '">' + (memoText ? esc(memoText) : 'No memo') + '</div>' +
+            '<span class="ka-hit-memo-cell">' +
+            (extraN ? '<span class="ka-hit-memo-extra" title="' + esc(evMemos.join(' · ')) + '">+' + extraN + '</span>' : '') +
+            '<input type="text" class="ka-hit-memo-input" data-row-memo value="' + esc(memoVal) + '" placeholder="No memo" aria-label="Memo for this call" title="' + esc(memoVal || 'Type a memo — saved into the evidence report') + '">' +
+            '</span>' +
             '<span class="ka-hit-grip" aria-hidden="true" title="Drag to evidence"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide"><circle cx="9" cy="12" r="1"></circle><circle cx="9" cy="5" r="1"></circle><circle cx="9" cy="19" r="1"></circle><circle cx="15" cy="12" r="1"></circle><circle cx="15" cy="5" r="1"></circle><circle cx="15" cy="19" r="1"></circle></svg></span>' +
             '</article>';
         });
@@ -891,6 +897,26 @@
     return texts;
   }
 
+  function firstEvidenceItemFor(hitId) {
+    for (var i = 0; i < state.evidence.length; i++) {
+      var g = state.evidence[i];
+      for (var j = 0; j < g.items.length; j++) if (g.items[j].hitId === hitId) return g.items[j];
+    }
+    return null;
+  }
+
+  // 행 메모 입력 → 첫 Evidence 카드 메모 갱신, 카드가 없으면 검출 스팬으로 자동 수집
+  function setRowMemo(hitId, text) {
+    var it = firstEvidenceItemFor(hitId);
+    if (it) { it.memo = text; return; }
+    if (!String(text).trim()) return;
+    var h = state.hitById[hitId];
+    if (!h) return;
+    var snap = snapshotFromHit(h, null);
+    snap.memo = text;
+    addEvidenceItem(lastOpenGroupId(), snap);
+  }
+
   function findMemoAt(key, t0, t1) { // 구간 겹침이 가장 큰 메모
     var best = null;
     var bestOv = 0.001;
@@ -1221,6 +1247,18 @@
         renderResults();
         return;
       }
+      var memoInput = e.target.closest('input[data-row-memo]');
+      if (memoInput) { // 메모 입력 클릭 — 행 선택만 하고 재렌더 후 포커스를 되돌린다
+        var mrow = e.target.closest('[data-hit]');
+        var hid = mrow.getAttribute('data-hit');
+        if (state.selectedHitId !== hid) {
+          state.selectedHitId = hid;
+          renderResults();
+          var again = document.querySelector('[data-hit="' + hid + '"] input[data-row-memo]');
+          if (again) again.focus();
+        }
+        return;
+      }
       var seekBtn = e.target.closest('button[data-seek]');
       var row = e.target.closest('[data-hit]');
       if (row) {
@@ -1231,7 +1269,21 @@
         }
       }
     });
+    // 행 메모 타이핑 → Evidence 카드로 실시간 반영 (행은 재렌더하지 않아 포커스 유지)
+    $('results-tbody').addEventListener('input', function (e) {
+      var inp = e.target.closest('input[data-row-memo]');
+      if (!inp) return;
+      setRowMemo(inp.closest('[data-hit]').getAttribute('data-hit'), inp.value);
+      renderEvidence();
+    });
+    $('results-tbody').addEventListener('change', function (e) {
+      if (e.target.closest('input[data-row-memo]')) persistNotes();
+    });
     $('results-tbody').addEventListener('keydown', function (e) {
+      if (e.target.closest('input[data-row-memo]')) {
+        if (e.key === 'Enter') e.target.blur();
+        return; // 입력 중 스페이스/엔터로 행 선택 로직이 끼어들지 않게
+      }
       if (e.key !== 'Enter' && e.key !== ' ') return;
       var row = e.target.closest('[data-hit]');
       if (!row) return;
@@ -1239,6 +1291,7 @@
       selectHit(row.getAttribute('data-hit'));
     });
     $('results-tbody').addEventListener('dragstart', function (e) {
+      if (e.target.closest('input')) { e.preventDefault(); return; } // 입력 필드에서 드래그 금지
       var row = e.target.closest('[data-hit]');
       if (!row) return;
       row.classList.add('is-dragging');

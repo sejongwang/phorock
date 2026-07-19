@@ -91,7 +91,8 @@ callDate, matchAt("m:ss"), spanStart, spanEnd, duration, matchedText(truth 부�
 pronunciation("[<매칭 변이 ipa>]"), phoneAlignment(매칭 스팬 IPA), searchTerms, pronunciationFamily,
 phoneticScore, effectivePhoneticScore, contextScore, evidenceCompleteness(0.9 고정+노이즈),
 proximitySeconds, isNegated, hasMetadataConflict(false), groupLabel, sourceSystem,
-sourceHash(실제 sha256), expectedHash(동일), audioUrl("/audio/<clipId>.wav"), reviewStatus("미검토")`
+sourceHash(실제 sha256), expectedHash(동일), audioUrl("/audio/<clipId>.wav"), reviewStatus("미검토"),
+phoneTimeline(클립 전구간 ZIPA phones [{s,t0,t1}] — index.json 그대로, v2 플레이어 음소 스트립용)`
 groupLabel 규칙은 디자인 runSimulatedSearch와 동일: isNegated→"03 · 부정문맥 / 오탐 방어",
 context≥0.8&complete≥0.85→"01 · 우선 검토", else "02 · 추가 문맥 필요".
 

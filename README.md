@@ -24,6 +24,23 @@ cd <repo-root> && ~/zipa-mac/zipa-env/bin/python -m uvicorn server.main:app --po
 
 브라우저: **http://localhost:8765**
 
+## 정적 데모 — GitHub Pages 폴백 (서버·모델 불필요)
+
+발표장에서 노트북을 못 쓸 때를 위한 스냅샷 번들. 화면에 뜨는 검색 결과·IPA 정렬·
+음소 타임라인은 전부 **실제 ZIPA 출력의 사전 계산본**이다 (가짜 데이터 아님).
+
+```bash
+# 서버 켠 상태에서 재생성 → docs/
+python3 mock/build_mock.py
+```
+
+배포: GitHub → Settings → Pages → Source `main` 브랜치 `/docs` 폴더
+→ https://sejongwang.github.io/phorock/
+
+- `docs/index.html` = `app/` 원본 + `mock-data.js`(스냅샷) + `mock-shim.js`(fetch 인터셉트) 주입 — `app.js` 는 무수정
+- 유사도 슬라이더는 0.55 스냅샷을 클라이언트 필터로 재현 (서버 threshold 동작과 동치)
+- 제한: 스냅샷에 없는 자유 검색어는 "결과 없음"
+
 ## 데모 시나리오 (3단계)
 
 1. **발음 변이 검색** — 검색 데스크에서 termset 칩 `개체·상품명(entity)`을 선택하고 `Coragen`을 검색한다.

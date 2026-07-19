@@ -1,0 +1,15 @@
+{
+  "name": "voxledger-desktop",
+  "productName": "VoxLedger",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VoxLedger Hinglish Audit Desk — Electron demo shell",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-packager . VoxLedger --platform=darwin --arch=arm64 --overwrite --out=dist"
+  },
+  "devDependencies": {
+    "electron": "latest"
+  }
+}

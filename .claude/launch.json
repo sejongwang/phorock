@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "docs-subpath",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8942", "--directory", "/Users/junehwi/phorock"],
+      "port": 8942
+    }
+  ]
+}

@@ -53,6 +53,7 @@ CASE_ID = "REG-HI-2026-017"
 # ---------------------------------------------------------------------------
 
 INDEX: dict = json.loads((DATA / "index.json").read_text(encoding="utf-8"))
+_CLIP_BY_ID = {c["id"]: c for c in INDEX.get("clips", [])}
 TERM_SETS: list[dict] = json.loads(
     (DATA / "termsets.json").read_text(encoding="utf-8")
 )
@@ -208,6 +209,8 @@ def _make_hit(term_set_id: str, best: dict, terms_matched: list[str]) -> dict:
         "expectedHash": best.get("sha256"),
         "audioUrl": f"/audio/{clip_id}.wav",
         "reviewStatus": "미검토",
+        # 클립 전구간 ZIPA phones [{s,t0,t1}] — 플레이어 음소 스트립용 (§6)
+        "phoneTimeline": _CLIP_BY_ID.get(clip_id, {}).get("phones", []),
     }
 
 

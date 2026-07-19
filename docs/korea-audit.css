@@ -1791,6 +1791,27 @@
   border-radius: 7px;
 }
 
+/* 좌패널 앵커 정렬 — Complaint 섹션이 패널 바닥까지 늘어나고 hypothesis 는 하단에 붙는다.
+   화면이 클수록 본문과 가설 사이 여백이 늘어나는 의도된 배치. */
+.ka-pronunciation-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.ka-pronunciation-panel .ka-side-section:last-child {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+}
+
+.ka-pronunciation-panel .ka-side-section:last-child .ka-case-body {
+  margin-bottom: 11px;
+}
+
+.ka-pronunciation-panel .ka-side-section:last-child .ka-hypo-line {
+  margin-top: auto;
+}
+
 .ka-hypo-line span {
   color: var(--ka-muted);
   font-size: 9.5px;

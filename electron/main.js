@@ -1,5 +1,10 @@
-/* VoxLedger 데모 셸 — FastAPI(:8765) 서버를 자식 프로세스로 띄우고 창에 로드한다.
+/* VoxLedger 데모 셸.
  *
+ * 기본(원격 모드): GitHub Pages 정적 데모(https://sejongwang.github.io/phorock/)를
+ * 로드한다 — 서버·모델 불필요, 아무 맥에서나 동작. 로드 실패(오프라인 등) 시
+ * 아래 로컬 모드로 자동 폴백한다.
+ *
+ * 로컬 모드(VOX_MODE=local 또는 --local): FastAPI(:8765)를 자식 프로세스로 띄운다.
  * - 이미 :8765 에 서버가 떠 있으면 그대로 재사용 (개발 중 uvicorn 수동 구동과 공존)
  * - 아니면 ~/zipa-mac/zipa-env 파이썬으로 uvicorn 을 spawn — ZIPA CoreML 세션
  *   초기화에 수 초 걸리므로 /api/bootstrap 이 200 을 줄 때까지 폴링 후 로드
@@ -19,6 +24,8 @@ const path = require('path');
 
 const PORT = 8765;
 const BASE_URL = 'http://127.0.0.1:' + PORT;
+const REMOTE_URL = 'https://sejongwang.github.io/phorock/';
+const LOCAL_MODE = process.env.VOX_MODE === 'local' || process.argv.indexOf('--local') !== -1;
 
 function resolveRepo() {
   if (process.env.VOX_REPO) return process.env.VOX_REPO;
@@ -99,13 +106,26 @@ function createWindow() {
   win.loadURL(LOADING_HTML);
 }
 
+async function bootLocal() {
+  await ensureServer();
+  if (win) await win.loadURL(BASE_URL);
+}
+
 async function boot() {
   createWindow();
+  if (!LOCAL_MODE) {
+    try {
+      if (win) await win.loadURL(REMOTE_URL); // 기본: Pages 정적 데모
+      return;
+    } catch (err) {
+      // 오프라인 등 원격 로드 실패 — 로컬 ZIPA 서버 모드로 폴백
+      if (win) await win.loadURL(LOADING_HTML);
+    }
+  }
   try {
-    await ensureServer();
-    if (win) await win.loadURL(BASE_URL);
+    await bootLocal();
   } catch (err) {
-    dialog.showErrorBox('VoxLedger 서버 구동 실패', String(err && err.message ? err.message : err));
+    dialog.showErrorBox('VoxLedger 구동 실패', String(err && err.message ? err.message : err));
     app.quit();
   }
 }

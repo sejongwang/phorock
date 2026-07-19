@@ -153,6 +153,7 @@
     hitById: {},
     customTerms: {},          // termSetId → [키워드]
     memos: {},                // hitId → [{ id, text, t0, t1 }, …] 구간 메모 목록
+    rowMemos: {},             // hitId → 통화(행) 메모 — Evidence 와 무관하게 존재 가능
     memoSeq: 1,
     evidence: [],             // 시작은 빈 패널 — 첫 드롭이나 + 버튼으로 그룹 생성
     evidenceSeq: 1,
@@ -204,7 +205,7 @@
   function persistNotes() {
     try {
       localStorage.setItem(NOTES_KEY, JSON.stringify({
-        memos: state.memos, memoSeq: state.memoSeq,
+        memos: state.memos, memoSeq: state.memoSeq, rowMemos: state.rowMemos,
         evidence: state.evidence, evidenceSeq: state.evidenceSeq
       }));
     } catch (e) { /* quota — 무시 */ }
@@ -224,6 +225,7 @@
           });
         }
         if (d.memoSeq) state.memoSeq = Math.max(state.memoSeq, d.memoSeq);
+        if (d.rowMemos && typeof d.rowMemos === 'object') state.rowMemos = d.rowMemos;
         if (Array.isArray(d.evidence) && d.evidence.length) state.evidence = d.evidence;
         if (d.evidenceSeq) state.evidenceSeq = d.evidenceSeq;
         state.evidence.forEach(function (g) { // 구버전 한글 그룹명 이행
@@ -441,8 +443,8 @@
           var isSel = sel && h.id === sel.id;
           var evMemos = evidenceMemosFor(h.id);
           var firstIt = firstEvidenceItemFor(h.id);
-          var memoVal = firstIt && firstIt.memo ? String(firstIt.memo) : '';
-          var extraN = Math.max(0, evMemos.length - (memoVal.trim() ? 1 : 0));
+          var memoVal = rowMemoOf(h.id);
+          var extraN = Math.max(0, evMemos.length - (firstIt && firstIt.memo && String(firstIt.memo).trim() ? 1 : 0));
           html += '<article class="ka-hit-row' + (isSel ? ' is-selected' : '') + '" data-hit="' + esc(h.id) + '" draggable="true" tabindex="0" aria-selected="' + (isSel ? 'true' : 'false') + '">' +
             '<button type="button" class="ka-hit-time" data-seek="' + toSeconds(h.spanStart) + '" title="Play detected span">' + esc(h.matchAt) + '</button>' +
             '<div class="ka-hit-text">' +
@@ -532,7 +534,7 @@
     return {
       hitId: h.id, callId: h.callId, callDate: h.callDate,
       t0: t0, t1: t1,
-      memo: '', // 카드 메모는 담은 뒤 카드에서 직접 쓴다 (파형 메모와 독립)
+      memo: state.rowMemos[h.id] || '', // 담는 시점의 행 메모를 시드 — 이후 첫 카드와 미러링
       transcript: h.transcript || h.matchedText || '',
       audioUrl: h.audioUrl, duration: h.duration,
       spanStart: h.spanStart, spanEnd: h.spanEnd,
@@ -905,16 +907,19 @@
     return null;
   }
 
-  // 행 메모 입력 → 첫 Evidence 카드 메모 갱신, 카드가 없으면 검출 스팬으로 자동 수집
+  // 행 메모는 통화 자체의 메모 — Evidence 에 안 담긴 통화에도 존재할 수 있다.
+  // 그 통화가 Evidence 에 담겨 있으면 첫 카드와 양방향 미러링된다 (카드 자동 생성은 하지 않음).
   function setRowMemo(hitId, text) {
+    if (String(text).trim()) state.rowMemos[hitId] = text;
+    else delete state.rowMemos[hitId];
     var it = firstEvidenceItemFor(hitId);
-    if (it) { it.memo = text; return; }
-    if (!String(text).trim()) return;
-    var h = state.hitById[hitId];
-    if (!h) return;
-    var snap = snapshotFromHit(h, null);
-    snap.memo = text;
-    addEvidenceItem(lastOpenGroupId(), snap);
+    if (it) it.memo = text;
+  }
+
+  function rowMemoOf(hitId) {
+    var it = firstEvidenceItemFor(hitId);
+    if (it && it.memo) return String(it.memo);
+    return state.rowMemos[hitId] || '';
   }
 
   function findMemoAt(key, t0, t1) { // 구간 겹침이 가장 큰 메모
@@ -1370,7 +1375,15 @@
         var card = ta.closest('.ka-ev-card');
         var gid0 = card.getAttribute('data-ev-group');
         var idx0 = Number(card.getAttribute('data-ev-idx'));
-        state.evidence.forEach(function (g) { if (g.id === gid0 && g.items[idx0]) g.items[idx0].memo = ta.value; });
+        var edited = null;
+        state.evidence.forEach(function (g) {
+          if (g.id === gid0 && g.items[idx0]) { g.items[idx0].memo = ta.value; edited = g.items[idx0]; }
+        });
+        // 그 통화의 첫 카드면 행 메모에도 미러링 (카드 삭제 후에도 행 메모가 남도록)
+        if (edited && firstEvidenceItemFor(edited.hitId) === edited) {
+          if (String(ta.value).trim()) state.rowMemos[edited.hitId] = ta.value;
+          else delete state.rowMemos[edited.hitId];
+        }
         renderResults();
         return;
       }

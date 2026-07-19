@@ -692,7 +692,6 @@
     var sel = state.playerSel;
     if (!obj || !sel) {
       selDiv.hidden = true;
-      $('memo-span-label').textContent = 'No selection';
       drawWave();
       return;
     }
@@ -703,7 +702,6 @@
     selDiv.style.width = Math.max(0.5, r - l) + '%';
     $('sel-t0').textContent = fmtClock1(sel.t0);
     $('sel-t1').textContent = fmtClock1(sel.t1);
-    $('memo-span-label').textContent = fmtClock1(sel.t0) + ' – ' + fmtClock1(sel.t1) + ' selected';
     updatePhoneDim();
     drawWave();
   }
@@ -852,7 +850,6 @@
         renderWaveMemo();
       }
     });
-    renderMemoBox();
     renderWaveMemo();
   }
 
@@ -876,14 +873,6 @@
         phoneTimeline: h.phoneTimeline
       });
     }
-  }
-
-  function renderMemoBox() {
-    // 좌패널 메모박스는 "현재 선택 구간"의 메모를 편집한다
-    var h = selectedHit();
-    var sel = state.playerSel;
-    var m = h && sel ? findMemoAt(h.id, sel.t0, sel.t1) : null;
-    $('memo-input').value = m ? m.text : '';
   }
 
   // ------------------------------------------- 파형 직접 메모 (우클릭 → 인라인 입력)
@@ -939,7 +928,6 @@
     persistNotes();
     renderResults();
     renderEvidence();
-    renderMemoBox();
     renderWaveMemo();
   }
 
@@ -1006,7 +994,6 @@
     persistNotes();
     renderResults();
     renderEvidence();
-    renderMemoBox();
     renderWaveMemo();
   }
 
@@ -1382,18 +1369,6 @@
       note.textContent = 'Approval report draft created — ' + evidenceTotal() + ' evidence items · ' + nowKst();
     });
 
-    // 메모 저장 — 현재 선택 구간의 메모를 갱신/추가 (빈 텍스트 = 그 구간 메모 삭제)
-    $('memo-save').addEventListener('click', function () {
-      var h = selectedHit();
-      if (!h) return;
-      var sel = state.playerSel || { t0: toSeconds(h.spanStart), t1: toSeconds(h.spanEnd) };
-      upsertMemo(h.id, sel.t0, sel.t1, $('memo-input').value.trim(), null);
-      persistNotes();
-      renderResults();
-      renderEvidence(); // 근거 카드도 메모를 보여주므로 즉시 반영
-      renderWaveMemo(); // 파형 위 메모 밴드도 갱신
-    });
-
     // 플레이어
     var audio = $('hit-audio');
     var playBtn = $('player-play');
@@ -1459,7 +1434,6 @@
       if (!band) return;
       state.playerSel = { t0: Number(band.getAttribute('data-t0')) || 0, t1: Number(band.getAttribute('data-t1')) || 0 };
       updateSelUI();
-      renderMemoBox(); // 좌패널 메모박스도 이 구간 메모로 전환
     });
     $('wave-memo-input').addEventListener('keydown', function (e) {
       if (e.key === 'Enter') commitWaveMemo();

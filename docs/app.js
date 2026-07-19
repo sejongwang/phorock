@@ -152,7 +152,8 @@
     selectedHitId: null,
     hitById: {},
     customTerms: {},          // termSetId → [키워드]
-    memos: {},                // hitId → { text, t0, t1 }
+    memos: {},                // hitId → [{ id, text, t0, t1 }, …] 구간 메모 목록
+    memoSeq: 1,
     evidence: [],             // 시작은 빈 패널 — 첫 드롭이나 + 버튼으로 그룹 생성
     evidenceSeq: 1,
     collapsedDays: [],
@@ -203,7 +204,8 @@
   function persistNotes() {
     try {
       localStorage.setItem(NOTES_KEY, JSON.stringify({
-        memos: state.memos, evidence: state.evidence, evidenceSeq: state.evidenceSeq
+        memos: state.memos, memoSeq: state.memoSeq,
+        evidence: state.evidence, evidenceSeq: state.evidenceSeq
       }));
     } catch (e) { /* quota — 무시 */ }
   }
@@ -213,7 +215,15 @@
       if (!raw) return;
       var d = JSON.parse(raw);
       if (d && typeof d === 'object') {
-        if (d.memos) state.memos = d.memos;
+        if (d.memos) { // 구버전(hit당 단일 객체) → 리스트 이행
+          state.memos = {};
+          Object.keys(d.memos).forEach(function (k) {
+            var v = d.memos[k];
+            if (Array.isArray(v)) state.memos[k] = v;
+            else if (v && v.text) state.memos[k] = [{ id: 'm' + (state.memoSeq++), text: v.text, t0: v.t0 || 0, t1: v.t1 || 0 }];
+          });
+        }
+        if (d.memoSeq) state.memoSeq = Math.max(state.memoSeq, d.memoSeq);
         if (Array.isArray(d.evidence) && d.evidence.length) state.evidence = d.evidence;
         if (d.evidenceSeq) state.evidenceSeq = d.evidenceSeq;
         state.evidence.forEach(function (g) { // 구버전 한글 그룹명 이행
@@ -429,8 +439,7 @@
         html += '<div class="ka-day-rows">';
         g.hits.forEach(function (h) {
           var isSel = sel && h.id === sel.id;
-          var memo = state.memos[h.id];
-          var memoText = memo && memo.text ? memo.text : '';
+          var memoText = memosOf(h.id).map(function (m) { return m.text; }).join(' · ');
           html += '<article class="ka-hit-row' + (isSel ? ' is-selected' : '') + '" data-hit="' + esc(h.id) + '" draggable="true" tabindex="0" aria-selected="' + (isSel ? 'true' : 'false') + '">' +
             '<button type="button" class="ka-hit-time" data-seek="' + toSeconds(h.spanStart) + '" title="Play detected span">' + esc(h.matchAt) + '</button>' +
             '<div class="ka-hit-text">' +
@@ -494,7 +503,7 @@
         html += '<div class="ka-ev-items">';
         g.items.forEach(function (it, i) {
           // 카드 본문은 감사자 메모만 — 전사(transcript)는 음성 데이터라 자동 채움하지 않는다
-          var liveMemo = state.memos[it.hitId] && state.memos[it.hitId].text ? state.memos[it.hitId].text : '';
+          var liveMemo = memoTextFor(it.hitId, Number(it.t0) || 0, Number(it.t1) || 0);
           var memoText = liveMemo || it.memo || '';
           html += '<article class="ka-ev-card" data-ev-group="' + esc(g.id) + '" data-ev-idx="' + i + '">' +
             '<div class="ka-ev-meta"><strong>' + esc(shortDT(it.callDate)) + '</strong><span>' + fmtClock1(it.t0) + ' – ' + fmtClock1(it.t1) + '</span></div>' +
@@ -516,11 +525,10 @@
   function snapshotFromHit(h, sel) {
     var t0 = sel ? sel.t0 : toSeconds(h.spanStart);
     var t1 = sel ? sel.t1 : toSeconds(h.spanEnd);
-    var memo = state.memos[h.id];
     return {
       hitId: h.id, callId: h.callId, callDate: h.callDate,
       t0: t0, t1: t1,
-      memo: memo && memo.text ? memo.text : '',
+      memo: memoTextFor(h.id, t0, t1),
       transcript: h.transcript || h.matchedText || '',
       audioUrl: h.audioUrl, duration: h.duration,
       spanStart: h.spanStart, spanEnd: h.spanEnd,
@@ -871,53 +879,118 @@
   }
 
   function renderMemoBox() {
+    // 좌패널 메모박스는 "현재 선택 구간"의 메모를 편집한다
     var h = selectedHit();
-    var memo = h ? state.memos[h.id] : null;
-    $('memo-input').value = memo && memo.text ? memo.text : '';
+    var sel = state.playerSel;
+    var m = h && sel ? findMemoAt(h.id, sel.t0, sel.t1) : null;
+    $('memo-input').value = m ? m.text : '';
   }
 
   // ------------------------------------------- 파형 직접 메모 (우클릭 → 인라인 입력)
+  // 모델: state.memos[hitId] = [{ id, text, t0, t1 }, …] — hit당 여러 구간 메모
   function memoKeyOf(obj) { return String((obj && obj.id) || '').replace(/^ev-/, ''); }
+
+  function memosOf(key) { return state.memos[key] || []; }
+
+  function findMemoAt(key, t0, t1) { // 구간 겹침이 가장 큰 메모
+    var best = null;
+    var bestOv = 0.001;
+    memosOf(key).forEach(function (m) {
+      var ov = Math.min(Number(m.t1) || 0, t1) - Math.max(Number(m.t0) || 0, t0);
+      if (ov > bestOv) { bestOv = ov; best = m; }
+    });
+    return best;
+  }
+
+  function memoTextFor(key, t0, t1) { // 근거 카드용 — 스팬과 겹치는 메모 우선, 없으면 전체 병기
+    var m = findMemoAt(key, t0, t1);
+    if (m) return m.text;
+    return memosOf(key).map(function (x) { return x.text; }).join(' · ');
+  }
+
+  function syncEvidenceMemos(key) {
+    state.evidence.forEach(function (g) {
+      g.items.forEach(function (it) {
+        if (it.hitId === key) it.memo = memoTextFor(key, Number(it.t0) || 0, Number(it.t1) || 0);
+      });
+    });
+  }
+
+  function upsertMemo(key, t0, t1, text, editId) {
+    var list = memosOf(key).slice();
+    var target = null;
+    if (editId) list.forEach(function (m) { if (m.id === editId) target = m; });
+    else target = findMemoAt(key, t0, t1); // 같은 구간에 다시 쓰면 그 메모를 갱신
+    if (text) {
+      if (target) { target.text = text; target.t0 = t0; target.t1 = t1; }
+      else list.push({ id: 'm' + (state.memoSeq++), text: text, t0: t0, t1: t1 });
+      state.memos[key] = list;
+    } else if (target) { // 빈 텍스트 저장 = 해당 메모 삭제
+      list = list.filter(function (m) { return m !== target; });
+      if (list.length) state.memos[key] = list; else delete state.memos[key];
+    }
+    syncEvidenceMemos(key);
+  }
+
+  function deleteMemo(key, id) {
+    var list = memosOf(key).filter(function (m) { return m.id !== id; });
+    if (list.length) state.memos[key] = list; else delete state.memos[key];
+    syncEvidenceMemos(key);
+    persistNotes();
+    renderResults();
+    renderEvidence();
+    renderMemoBox();
+    renderWaveMemo();
+  }
 
   function renderWaveMemo() {
     var wrap = $('wave-memos');
     var obj = playerHit();
-    var memo = obj ? state.memos[memoKeyOf(obj)] : null;
-    if (!memo || !memo.text) { wrap.innerHTML = ''; return; }
+    var list = obj ? memosOf(memoKeyOf(obj)) : [];
+    if (!list.length) { wrap.innerHTML = ''; return; }
     var dur = state.playerDur || 1;
-    var t0 = Math.max(0, Math.min(dur, Number(memo.t0) || 0));
-    var t1 = Math.max(t0, Math.min(dur, Number(memo.t1) || 0));
-    var l = t0 / dur * 100;
-    var w = Math.max(3, (t1 - t0) / dur * 100);
-    if (l + w > 100) w = 100 - l;
-    // 메모 구간을 연한 회색 밴드로 하이라이트하고 텍스트를 그 중앙에 남긴다
-    wrap.innerHTML = '<button type="button" class="ka-wave-memo" style="left: ' + l.toFixed(2) + '%; width: ' + w.toFixed(2) + '%;"' +
-      ' data-t0="' + t0 + '" data-t1="' + t1 + '"' +
-      ' title="' + esc(fmtClock1(t0) + ' – ' + fmtClock1(t1) + ' · ' + memo.text) + '">' +
-      '<span class="ka-wave-memo-text">' +
-      '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"></path><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"></path></svg>' +
-      esc(memo.text) + '</span></button>';
+    // 메모 구간마다 연한 회색 밴드 — 텍스트는 중앙, 우상단 ×로 삭제
+    wrap.innerHTML = list.map(function (m) {
+      var t0 = Math.max(0, Math.min(dur, Number(m.t0) || 0));
+      var t1 = Math.max(t0, Math.min(dur, Number(m.t1) || 0));
+      var l = t0 / dur * 100;
+      var w = Math.max(3, (t1 - t0) / dur * 100);
+      if (l + w > 100) w = 100 - l;
+      return '<div class="ka-wave-memo" role="button" tabindex="0" style="left: ' + l.toFixed(2) + '%; width: ' + w.toFixed(2) + '%;"' +
+        ' data-memo-id="' + esc(m.id) + '" data-t0="' + t0 + '" data-t1="' + t1 + '"' +
+        ' title="' + esc(fmtClock1(t0) + ' – ' + fmtClock1(t1) + ' · ' + m.text) + '">' +
+        '<span class="ka-wave-memo-text">' +
+        '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"></path><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"></path></svg>' +
+        esc(m.text) + '</span>' +
+        '<button type="button" class="ka-wave-memo-x" data-memo-del="' + esc(m.id) + '" aria-label="Delete memo"><svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>' +
+        '</div>';
+    }).join('');
   }
 
-  var memoDraft = null; // 우클릭으로 잡은 메모 대상 구간 { t0, t1 }
+  var memoDraft = null; // 우클릭으로 잡은 메모 대상 { t0, t1, editId }
 
-  function openWaveMemoEditor(clientX) {
+  function openWaveMemoEditor(clientX, memoId) {
     var obj = playerHit();
     if (!obj) return;
     var rect = $('player-wave').getBoundingClientRect();
     var dur = state.playerDur || 1;
+    var key = memoKeyOf(obj);
+    var editing = null;
+    if (memoId) memosOf(key).forEach(function (m) { if (m.id === memoId) editing = m; });
     var t = Math.max(0, Math.min(dur, (clientX - rect.left) / Math.max(1, rect.width) * dur));
     var sel = state.playerSel;
-    // 선택 구간 안에서 우클릭하면 그 구간에, 밖이면 클릭 지점 ±0.3s 청크에 메모
-    memoDraft = sel && t >= sel.t0 && t <= sel.t1
-      ? { t0: sel.t0, t1: sel.t1 }
-      : { t0: Math.max(0, t - 0.3), t1: Math.min(dur, t + 0.3) };
+    if (editing) { // 기존 밴드 우클릭 — 그 메모를 수정
+      memoDraft = { t0: Number(editing.t0) || 0, t1: Number(editing.t1) || 0, editId: editing.id };
+    } else { // 선택 구간 안이면 그 구간에, 밖이면 클릭 지점 ±0.3s 청크에 새 메모
+      memoDraft = sel && t >= sel.t0 && t <= sel.t1
+        ? { t0: sel.t0, t1: sel.t1, editId: null }
+        : { t0: Math.max(0, t - 0.3), t1: Math.min(dur, t + 0.3), editId: null };
+    }
     state.playerSel = { t0: memoDraft.t0, t1: memoDraft.t1 };
     updateSelUI();
     var ed = $('wave-memo-editor');
     var inp = $('wave-memo-input');
-    var memo = state.memos[memoKeyOf(obj)];
-    inp.value = memo && memo.text ? memo.text : '';
+    inp.value = editing ? editing.text : '';
     ed.style.left = Math.max(0, Math.min(76, memoDraft.t0 / dur * 100)) + '%';
     ed.hidden = false;
     inp.focus();
@@ -927,14 +1000,7 @@
   function commitWaveMemo() {
     var obj = playerHit();
     if (!obj || !memoDraft) { cancelWaveMemo(); return; }
-    var text = $('wave-memo-input').value.trim();
-    var key = memoKeyOf(obj);
-    if (text) state.memos[key] = { text: text, t0: memoDraft.t0, t1: memoDraft.t1 };
-    else delete state.memos[key];
-    // 같은 hit이 이미 근거 그룹에 있으면 카드 메모도 함께 갱신
-    state.evidence.forEach(function (g) {
-      g.items.forEach(function (it) { if (it.hitId === key) it.memo = text; });
-    });
+    upsertMemo(memoKeyOf(obj), memoDraft.t0, memoDraft.t1, $('wave-memo-input').value.trim(), memoDraft.editId);
     memoDraft = null;
     $('wave-memo-editor').hidden = true;
     persistNotes();
@@ -1316,22 +1382,16 @@
       note.textContent = 'Approval report draft created — ' + evidenceTotal() + ' evidence items · ' + nowKst();
     });
 
-    // 메모 저장
+    // 메모 저장 — 현재 선택 구간의 메모를 갱신/추가 (빈 텍스트 = 그 구간 메모 삭제)
     $('memo-save').addEventListener('click', function () {
       var h = selectedHit();
       if (!h) return;
-      var text = $('memo-input').value.trim();
       var sel = state.playerSel || { t0: toSeconds(h.spanStart), t1: toSeconds(h.spanEnd) };
-      if (text) state.memos[h.id] = { text: text, t0: sel.t0, t1: sel.t1 };
-      else delete state.memos[h.id];
-      // 같은 hit이 이미 근거 그룹에 있으면 카드 메모도 함께 갱신 (재청취→재작성 동기화)
-      state.evidence.forEach(function (g) {
-        g.items.forEach(function (it) { if (it.hitId === h.id) it.memo = text; });
-      });
+      upsertMemo(h.id, sel.t0, sel.t1, $('memo-input').value.trim(), null);
       persistNotes();
       renderResults();
       renderEvidence(); // 근거 카드도 메모를 보여주므로 즉시 반영
-      renderWaveMemo(); // 파형 위 메모 칩도 갱신
+      renderWaveMemo(); // 파형 위 메모 밴드도 갱신
     });
 
     // 플레이어
@@ -1385,13 +1445,21 @@
     wave.addEventListener('contextmenu', function (e) {
       if (!playerHit()) return;
       e.preventDefault();
-      openWaveMemoEditor(e.clientX);
+      var band = e.target.closest('.ka-wave-memo');
+      openWaveMemoEditor(e.clientX, band ? band.getAttribute('data-memo-id') : null);
     });
     $('wave-memos').addEventListener('click', function (e) {
-      var chip = e.target.closest('.ka-wave-memo');
-      if (!chip) return;
-      state.playerSel = { t0: Number(chip.getAttribute('data-t0')) || 0, t1: Number(chip.getAttribute('data-t1')) || 0 };
+      var del = e.target.closest('button[data-memo-del]');
+      if (del) { // 밴드의 × — 해당 메모 삭제
+        var obj = playerHit();
+        if (obj) deleteMemo(memoKeyOf(obj), del.getAttribute('data-memo-del'));
+        return;
+      }
+      var band = e.target.closest('.ka-wave-memo');
+      if (!band) return;
+      state.playerSel = { t0: Number(band.getAttribute('data-t0')) || 0, t1: Number(band.getAttribute('data-t1')) || 0 };
       updateSelUI();
+      renderMemoBox(); // 좌패널 메모박스도 이 구간 메모로 전환
     });
     $('wave-memo-input').addEventListener('keydown', function (e) {
       if (e.key === 'Enter') commitWaveMemo();
@@ -1401,7 +1469,7 @@
     $('wave-memo-input').addEventListener('blur', cancelWaveMemo);
     wave.addEventListener('mousedown', function (e) {
       if (e.button !== 0) return; // 우클릭은 메모 편집
-      if (e.target.closest('button, input, .ka-wave-memo-editor')) return; // 음소 버튼·메모 입력
+      if (e.target.closest('button, input, .ka-wave-memo, .ka-wave-memo-editor')) return; // 음소·메모 UI
       if (!playerHit()) return;
       e.preventDefault();
       var rect = wave.getBoundingClientRect();

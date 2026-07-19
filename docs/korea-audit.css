@@ -2696,6 +2696,33 @@
   opacity: 0.65;
 }
 
+.ka-wave-memo-x {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  display: grid;
+  width: 15px;
+  height: 15px;
+  padding: 0;
+  color: var(--ka-muted);
+  background: color-mix(in srgb, var(--ka-paper) 88%, transparent);
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  opacity: 0;
+  place-items: center;
+}
+
+.ka-wave-memo:hover .ka-wave-memo-x,
+.ka-wave-memo:focus-visible .ka-wave-memo-x {
+  opacity: 1;
+}
+
+.ka-wave-memo-x:hover {
+  color: var(--color-text-red, #b91c1c);
+  background: var(--ka-paper);
+}
+
 .ka-wave-memo-editor {
   position: absolute;
   top: 5px;

@@ -700,23 +700,52 @@
     drawWave();
   }
 
-  function updatePii() {
-    var pii = $('player-pii');
-    var dur = state.playerDur || 1;
-    pii.hidden = !state.piiMask;
-    if (state.piiMask) {
-      var end = Math.min(dur * 0.22, 1.2);
-      pii.style.width = (end / dur * 100) + '%';
+  // PII 마스킹 스팬 — 클립 id 시드 결정적 랜덤(위치·길이·개수 1~2), 검출 스팬은 회피.
+  // 실검출이 아닌 데모 연출이므로 증거 구간(matched span)을 가리면 안 된다.
+  function piiSpansOf(obj) {
+    var dur = state.playerDur || Number(obj.duration) || 1;
+    var s0 = toSeconds(obj.spanStart);
+    var s1 = toSeconds(obj.spanEnd);
+    var seed = 0; // Math.imul — 32비트 정확 곱 (일반 곱은 2^53 초과 반올림으로 인접 id가 같은 시퀀스로 붕괴)
+    String(obj.callId || obj.id || '').split('').forEach(function (c) { seed = (Math.imul(seed, 31) + c.charCodeAt(0)) >>> 0; });
+    function rnd() { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 4294967296; }
+    var want = 1 + (rnd() < 0.45 ? 1 : 0);
+    var spans = [];
+    var tries = 0;
+    while (spans.length < want && tries++ < 24) {
+      var len = 0.35 + rnd() * 0.65; // 0.35~1.0s
+      var t0 = rnd() * Math.max(0.05, dur - len);
+      var t1 = Math.min(dur, t0 + len);
+      var clash = spans.some(function (p) { return t1 > p.t0 - 0.25 && t0 < p.t1 + 0.25; });
+      if (clash) continue;
+      spans.push({ t0: t0, t1: t1 });
     }
+    // 마스크 위치는 클립 고유로 고정하고, 현재 검출 스팬(증거)과 겹치는 것만 제외한다
+    // — 검색어가 바뀌어도 마스크가 움직이지 않고, 증거 구간은 항상 공개된다.
+    spans = spans.filter(function (p) { return !(p.t1 > s0 - 0.12 && p.t0 < s1 + 0.12); });
+    spans.sort(function (a, b) { return a.t0 - b.t0; });
+    return spans;
+  }
+
+  var PII_LOCK_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide" aria-hidden="true"><circle cx="12" cy="16" r="1"></circle><rect x="3" y="10" width="18" height="12" rx="2"></rect><path d="M7 10V7a5 5 0 0 1 10 0v3"></path></svg>';
+
+  function updatePii() {
+    var layer = $('player-pii');
+    var obj = playerHit();
+    var dur = state.playerDur || 1;
+    var spans = obj ? piiSpansOf(obj) : [];
+    var has = spans.length > 0;
+    layer.hidden = !state.piiMask || !has;
+    layer.innerHTML = layer.hidden ? '' : spans.map(function (p) {
+      var l = Math.max(0, p.t0 / dur * 100);
+      var w = Math.max(1.5, (p.t1 - p.t0) / dur * 100);
+      return '<div class="ka-player-pii" style="left: ' + l.toFixed(2) + '%; width: ' + w.toFixed(2) + '%;">' + PII_LOCK_SVG + 'PII</div>';
+    }).join('');
     var btn = $('btn-redaction');
+    btn.disabled = !has;
     btn.setAttribute('aria-pressed', state.piiMask ? 'true' : 'false');
     btn.querySelector('.xb3r6kr').textContent = state.piiMask ? 'Unmask PII' : 'Mask PII';
     updatePhoneDim();
-  }
-
-  function currentPiiEnd() {
-    var dur = state.playerDur || 1;
-    return Math.min(dur * 0.22, 1.2);
   }
 
   // 전구간 음소 타임라인: 서버 phoneTimeline(클립 전체 ZIPA 실측 [{s,t0,t1}])을 그대로
@@ -771,12 +800,14 @@
 
   function updatePhoneDim() {
     var sel = state.playerSel;
-    var piiEnd = state.piiMask ? currentPiiEnd() : -1;
+    var obj = playerHit();
+    var spans = state.piiMask && obj ? piiSpansOf(obj) : [];
     var btns = $('player-phones').querySelectorAll('button[data-t]');
     for (var i = 0; i < btns.length; i++) {
       var t = Number(btns[i].getAttribute('data-t')) || 0;
       btns[i].classList.toggle('is-out', !!sel && (t < sel.t0 || t > sel.t1));
-      btns[i].style.display = t <= piiEnd ? 'none' : ''; // 가려진 구간은 음소도 비공개
+      var masked = spans.some(function (p) { return t >= p.t0 && t <= p.t1; });
+      btns[i].style.display = masked ? 'none' : ''; // 가려진 구간은 음소도 비공개
     }
   }
 
@@ -810,9 +841,11 @@
         }
         renderPhones(obj); // 피크 기반 전구간 음소 배치
         updateSelUI();
+        renderWaveMemo();
       }
     });
     renderMemoBox();
+    renderWaveMemo();
   }
 
   function syncPlayer() {
@@ -841,6 +874,73 @@
     var h = selectedHit();
     var memo = h ? state.memos[h.id] : null;
     $('memo-input').value = memo && memo.text ? memo.text : '';
+  }
+
+  // ------------------------------------------- 파형 직접 메모 (우클릭 → 인라인 입력)
+  function memoKeyOf(obj) { return String((obj && obj.id) || '').replace(/^ev-/, ''); }
+
+  function renderWaveMemo() {
+    var wrap = $('wave-memos');
+    var obj = playerHit();
+    var memo = obj ? state.memos[memoKeyOf(obj)] : null;
+    if (!memo || !memo.text) { wrap.innerHTML = ''; return; }
+    var dur = state.playerDur || 1;
+    var l = Math.max(0, Math.min(86, (Number(memo.t0) || 0) / dur * 100));
+    wrap.innerHTML = '<button type="button" class="ka-wave-memo" style="left: ' + l.toFixed(2) + '%;"' +
+      ' data-t0="' + (Number(memo.t0) || 0) + '" data-t1="' + (Number(memo.t1) || 0) + '"' +
+      ' title="' + esc(fmtClock1(memo.t0) + ' – ' + fmtClock1(memo.t1) + ' · ' + memo.text) + '">' +
+      '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"></path><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"></path></svg>' +
+      esc(memo.text) + '</button>';
+  }
+
+  var memoDraft = null; // 우클릭으로 잡은 메모 대상 구간 { t0, t1 }
+
+  function openWaveMemoEditor(clientX) {
+    var obj = playerHit();
+    if (!obj) return;
+    var rect = $('player-wave').getBoundingClientRect();
+    var dur = state.playerDur || 1;
+    var t = Math.max(0, Math.min(dur, (clientX - rect.left) / Math.max(1, rect.width) * dur));
+    var sel = state.playerSel;
+    // 선택 구간 안에서 우클릭하면 그 구간에, 밖이면 클릭 지점 ±0.3s 청크에 메모
+    memoDraft = sel && t >= sel.t0 && t <= sel.t1
+      ? { t0: sel.t0, t1: sel.t1 }
+      : { t0: Math.max(0, t - 0.3), t1: Math.min(dur, t + 0.3) };
+    state.playerSel = { t0: memoDraft.t0, t1: memoDraft.t1 };
+    updateSelUI();
+    var ed = $('wave-memo-editor');
+    var inp = $('wave-memo-input');
+    var memo = state.memos[memoKeyOf(obj)];
+    inp.value = memo && memo.text ? memo.text : '';
+    ed.style.left = Math.max(0, Math.min(76, memoDraft.t0 / dur * 100)) + '%';
+    ed.hidden = false;
+    inp.focus();
+    inp.select();
+  }
+
+  function commitWaveMemo() {
+    var obj = playerHit();
+    if (!obj || !memoDraft) { cancelWaveMemo(); return; }
+    var text = $('wave-memo-input').value.trim();
+    var key = memoKeyOf(obj);
+    if (text) state.memos[key] = { text: text, t0: memoDraft.t0, t1: memoDraft.t1 };
+    else delete state.memos[key];
+    // 같은 hit이 이미 근거 그룹에 있으면 카드 메모도 함께 갱신
+    state.evidence.forEach(function (g) {
+      g.items.forEach(function (it) { if (it.hitId === key) it.memo = text; });
+    });
+    memoDraft = null;
+    $('wave-memo-editor').hidden = true;
+    persistNotes();
+    renderResults();
+    renderEvidence();
+    renderMemoBox();
+    renderWaveMemo();
+  }
+
+  function cancelWaveMemo() {
+    memoDraft = null;
+    $('wave-memo-editor').hidden = true;
   }
 
   // ---------------------------------------------------------------- search (다중 키워드 병합)
@@ -1225,6 +1325,7 @@
       persistNotes();
       renderResults();
       renderEvidence(); // 근거 카드도 메모를 보여주므로 즉시 반영
+      renderWaveMemo(); // 파형 위 메모 칩도 갱신
     });
 
     // 플레이어
@@ -1273,10 +1374,28 @@
       addEvidenceItem(gid, snapshotFromHit(h, state.playerSel));
     });
 
-    // 파형: 클릭 = 시점 이동, 드래그 = 구간 선택
+    // 파형: 클릭 = 시점 이동, 드래그 = 구간 선택, 우클릭 = 해당 청크에 메모
     var wave = $('player-wave');
+    wave.addEventListener('contextmenu', function (e) {
+      if (!playerHit()) return;
+      e.preventDefault();
+      openWaveMemoEditor(e.clientX);
+    });
+    $('wave-memos').addEventListener('click', function (e) {
+      var chip = e.target.closest('.ka-wave-memo');
+      if (!chip) return;
+      state.playerSel = { t0: Number(chip.getAttribute('data-t0')) || 0, t1: Number(chip.getAttribute('data-t1')) || 0 };
+      updateSelUI();
+    });
+    $('wave-memo-input').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') commitWaveMemo();
+      else if (e.key === 'Escape') cancelWaveMemo();
+      e.stopPropagation();
+    });
+    $('wave-memo-input').addEventListener('blur', cancelWaveMemo);
     wave.addEventListener('mousedown', function (e) {
-      if (e.target.closest('button')) return; // 음소 버튼
+      if (e.button !== 0) return; // 우클릭은 메모 편집
+      if (e.target.closest('button, input, .ka-wave-memo-editor')) return; // 음소 버튼·메모 입력
       if (!playerHit()) return;
       e.preventDefault();
       var rect = wave.getBoundingClientRect();

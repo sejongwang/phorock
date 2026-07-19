@@ -2635,6 +2635,67 @@
   pointer-events: none;
 }
 
+.ka-pii-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.ka-pii-layer .ka-player-pii {
+  min-width: 0;
+  border-radius: 7px;
+}
+
+.ka-wave-memos {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.ka-wave-memo {
+  position: absolute;
+  top: 5px;
+  z-index: 4;
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  max-width: 220px;
+  padding: 2px 7px;
+  overflow: hidden;
+  color: var(--ka-ink);
+  font-size: 10px;
+  font-weight: 650;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  background: var(--ka-orange-soft);
+  border: 1px solid var(--color-border-emphasized);
+  border-radius: 6px;
+  box-shadow: 0 1px 3px var(--color-shadow);
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.ka-wave-memo svg {
+  flex: 0 0 auto;
+  opacity: 0.65;
+}
+
+.ka-wave-memo-editor {
+  position: absolute;
+  top: 5px;
+  z-index: 6;
+}
+
+.ka-wave-memo-editor input {
+  width: 220px;
+  padding: 4px 9px;
+  font-size: 11px;
+  background: var(--ka-paper);
+  border: 1px solid var(--color-border-blue);
+  border-radius: 6px;
+  box-shadow: 0 2px 8px var(--color-shadow);
+}
+
 .ka-player-phones {
   position: absolute;
   inset: auto 0 0 0;

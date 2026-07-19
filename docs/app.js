@@ -885,12 +885,18 @@
     var memo = obj ? state.memos[memoKeyOf(obj)] : null;
     if (!memo || !memo.text) { wrap.innerHTML = ''; return; }
     var dur = state.playerDur || 1;
-    var l = Math.max(0, Math.min(86, (Number(memo.t0) || 0) / dur * 100));
-    wrap.innerHTML = '<button type="button" class="ka-wave-memo" style="left: ' + l.toFixed(2) + '%;"' +
-      ' data-t0="' + (Number(memo.t0) || 0) + '" data-t1="' + (Number(memo.t1) || 0) + '"' +
-      ' title="' + esc(fmtClock1(memo.t0) + ' – ' + fmtClock1(memo.t1) + ' · ' + memo.text) + '">' +
+    var t0 = Math.max(0, Math.min(dur, Number(memo.t0) || 0));
+    var t1 = Math.max(t0, Math.min(dur, Number(memo.t1) || 0));
+    var l = t0 / dur * 100;
+    var w = Math.max(3, (t1 - t0) / dur * 100);
+    if (l + w > 100) w = 100 - l;
+    // 메모 구간을 연한 회색 밴드로 하이라이트하고 텍스트를 그 중앙에 남긴다
+    wrap.innerHTML = '<button type="button" class="ka-wave-memo" style="left: ' + l.toFixed(2) + '%; width: ' + w.toFixed(2) + '%;"' +
+      ' data-t0="' + t0 + '" data-t1="' + t1 + '"' +
+      ' title="' + esc(fmtClock1(t0) + ' – ' + fmtClock1(t1) + ' · ' + memo.text) + '">' +
+      '<span class="ka-wave-memo-text">' +
       '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"></path><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"></path></svg>' +
-      esc(memo.text) + '</button>';
+      esc(memo.text) + '</span></button>';
   }
 
   var memoDraft = null; // 우클릭으로 잡은 메모 대상 구간 { t0, t1 }

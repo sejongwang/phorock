@@ -439,7 +439,7 @@
         html += '<div class="ka-day-rows">';
         g.hits.forEach(function (h) {
           var isSel = sel && h.id === sel.id;
-          var memoText = memosOf(h.id).map(function (m) { return m.text; }).join(' · ');
+          var memoText = evidenceMemosFor(h.id).join(' · ');
           html += '<article class="ka-hit-row' + (isSel ? ' is-selected' : '') + '" data-hit="' + esc(h.id) + '" draggable="true" tabindex="0" aria-selected="' + (isSel ? 'true' : 'false') + '">' +
             '<button type="button" class="ka-hit-time" data-seek="' + toSeconds(h.spanStart) + '" title="Play detected span">' + esc(h.matchAt) + '</button>' +
             '<div class="ka-hit-text">' +
@@ -879,6 +879,18 @@
 
   function memosOf(key) { return state.memos[key] || []; }
 
+  // 히트 행 메모 칸 = 그 통화의 Evidence 카드 메모들 (리포트용 메모와 동기화)
+  function evidenceMemosFor(hitId) {
+    var texts = [];
+    state.evidence.forEach(function (g) {
+      g.items.forEach(function (it) {
+        var t = it.hitId === hitId && it.memo ? String(it.memo).trim() : '';
+        if (t) texts.push(t);
+      });
+    });
+    return texts;
+  }
+
   function findMemoAt(key, t0, t1) { // 구간 겹침이 가장 큰 메모
     var best = null;
     var bestOv = 0.001;
@@ -1248,6 +1260,7 @@
         state.evidence = state.evidence.filter(function (g) { return g.id !== gidX; });
         persistNotes();
         renderEvidence();
+        renderResults(); // 행 메모 칸도 동기화
         return;
       }
       var head = e.target.closest('.ka-ev-head');
@@ -1266,6 +1279,7 @@
         state.evidence.forEach(function (g) { if (g.id === gid2) g.items.splice(idx, 1); });
         persistNotes();
         renderEvidence();
+        renderResults(); // 행 메모 칸도 동기화
         return;
       }
       var drop = e.target.closest('button[data-drop]');
@@ -1299,11 +1313,12 @@
     });
     content.addEventListener('input', function (e) {
       var ta = e.target.closest('textarea[data-ev-memo]');
-      if (ta) { // 카드 메모 — 재렌더 없이 상태만 갱신 (포커스 유지)
+      if (ta) { // 카드 메모 — 인스펙터는 재렌더하지 않아 포커스 유지, 결과 행 메모만 동기화
         var card = ta.closest('.ka-ev-card');
         var gid0 = card.getAttribute('data-ev-group');
         var idx0 = Number(card.getAttribute('data-ev-idx'));
         state.evidence.forEach(function (g) { if (g.id === gid0 && g.items[idx0]) g.items[idx0].memo = ta.value; });
+        renderResults();
         return;
       }
       var inp = e.target.closest('input[data-ev-name]');

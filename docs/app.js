@@ -502,12 +502,10 @@
       if (g.open) {
         html += '<div class="ka-ev-items">';
         g.items.forEach(function (it, i) {
-          // 카드 본문은 감사자 메모만 — 전사(transcript)는 음성 데이터라 자동 채움하지 않는다
-          var liveMemo = memoTextFor(it.hitId, Number(it.t0) || 0, Number(it.t1) || 0);
-          var memoText = liveMemo || it.memo || '';
+          // 카드 메모는 이 스팬(담은 통화 발췌) 전용 — 파형 메모와 독립, 카드에서 직접 기입
           html += '<article class="ka-ev-card" data-ev-group="' + esc(g.id) + '" data-ev-idx="' + i + '">' +
             '<div class="ka-ev-meta"><strong>' + esc(shortDT(it.callDate)) + '</strong><span>' + fmtClock1(it.t0) + ' – ' + fmtClock1(it.t1) + '</span></div>' +
-            '<p' + (memoText ? '' : ' class="is-empty"') + '>' + (memoText ? esc(memoText) : 'No memo') + '</p>' +
+            '<textarea class="ka-ev-memo" rows="2" placeholder="What does this call say…" data-ev-memo aria-label="Evidence span memo">' + esc(it.memo || '') + '</textarea>' +
             '<button type="button" class="ka-ev-x" data-remove aria-label="Remove from evidence"><svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>' +
             '</article>';
         });
@@ -528,7 +526,7 @@
     return {
       hitId: h.id, callId: h.callId, callDate: h.callDate,
       t0: t0, t1: t1,
-      memo: memoTextFor(h.id, t0, t1),
+      memo: '', // 카드 메모는 담은 뒤 카드에서 직접 쓴다 (파형 메모와 독립)
       transcript: h.transcript || h.matchedText || '',
       audioUrl: h.audioUrl, duration: h.duration,
       spanStart: h.spanStart, spanEnd: h.spanEnd,
@@ -891,20 +889,6 @@
     return best;
   }
 
-  function memoTextFor(key, t0, t1) { // 근거 카드용 — 스팬과 겹치는 메모 우선, 없으면 전체 병기
-    var m = findMemoAt(key, t0, t1);
-    if (m) return m.text;
-    return memosOf(key).map(function (x) { return x.text; }).join(' · ');
-  }
-
-  function syncEvidenceMemos(key) {
-    state.evidence.forEach(function (g) {
-      g.items.forEach(function (it) {
-        if (it.hitId === key) it.memo = memoTextFor(key, Number(it.t0) || 0, Number(it.t1) || 0);
-      });
-    });
-  }
-
   function upsertMemo(key, t0, t1, text, editId) {
     var list = memosOf(key).slice();
     var target = null;
@@ -918,13 +902,11 @@
       list = list.filter(function (m) { return m !== target; });
       if (list.length) state.memos[key] = list; else delete state.memos[key];
     }
-    syncEvidenceMemos(key);
   }
 
   function deleteMemo(key, id) {
     var list = memosOf(key).filter(function (m) { return m.id !== id; });
     if (list.length) state.memos[key] = list; else delete state.memos[key];
-    syncEvidenceMemos(key);
     persistNotes();
     renderResults();
     renderEvidence();
@@ -1259,7 +1241,7 @@
     // 관련근거 패널
     var content = $('inspector-content');
     content.addEventListener('click', function (e) {
-      if (e.target.closest('input[data-ev-name]')) return; // 이름 편집 중에는 접기 금지
+      if (e.target.closest('input[data-ev-name], textarea[data-ev-memo]')) return; // 이름·메모 편집 중에는 무시
       var rmGroup = e.target.closest('button[data-ev-remove]');
       if (rmGroup) {
         var gidX = rmGroup.getAttribute('data-ev-remove');
@@ -1316,13 +1298,21 @@
       }
     });
     content.addEventListener('input', function (e) {
+      var ta = e.target.closest('textarea[data-ev-memo]');
+      if (ta) { // 카드 메모 — 재렌더 없이 상태만 갱신 (포커스 유지)
+        var card = ta.closest('.ka-ev-card');
+        var gid0 = card.getAttribute('data-ev-group');
+        var idx0 = Number(card.getAttribute('data-ev-idx'));
+        state.evidence.forEach(function (g) { if (g.id === gid0 && g.items[idx0]) g.items[idx0].memo = ta.value; });
+        return;
+      }
       var inp = e.target.closest('input[data-ev-name]');
       if (!inp) return;
       var gid = inp.getAttribute('data-ev-name');
       state.evidence.forEach(function (g) { if (g.id === gid) g.name = inp.value; });
     });
     content.addEventListener('change', function (e) {
-      if (e.target.closest('input[data-ev-name]')) persistNotes();
+      if (e.target.closest('input[data-ev-name], textarea[data-ev-memo]')) persistNotes();
     });
     content.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' && e.target.closest('input[data-ev-name]')) e.target.blur();

@@ -2356,6 +2356,30 @@
   opacity: 0.7;
 }
 
+.ka-ev-memo {
+  display: block;
+  width: 100%;
+  padding: 0;
+  color: var(--ka-ink);
+  font: inherit;
+  font-size: 10.5px;
+  line-height: 1.5;
+  background: transparent;
+  border: 0;
+  resize: none;
+}
+
+.ka-ev-memo::placeholder {
+  color: var(--ka-muted);
+  opacity: 0.7;
+}
+
+.ka-ev-memo:focus-visible {
+  border-radius: 3px;
+  outline: 1px solid var(--color-border-blue);
+  outline-offset: 2px;
+}
+
 .ka-ev-group-x {
   display: grid;
   flex: 0 0 auto;
